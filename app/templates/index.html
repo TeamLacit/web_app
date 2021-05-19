@@ -1,10 +1,21 @@
-<!DOCTYPE html>
-<html>
-    <head>
-        <meta charset="utf-8"/>
-        <title>Main</title>
-    </head>
-    <body>
-        <h1>Hello World!</h1>
-    </body>
-</html>
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Django blog{% endblock title %}
+{% block head %}
+    <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:400"
+    rel="stylesheet">
+    <link href="{% static 'css/authorization/base.css' %}" rel="stylesheet">
+{% endblock head %}
+{% block content %}
+    <header>
+        <div class="nav-left">
+          <h1><a href="{% url 'home' %}">Django blog</a></h1>
+        </div>
+    </header>
+    {% if user.is_authenticated %}
+        <p>Hi {{ user.email }}!</p>
+    {% else %}
+        <p>You are not logged in.</p>
+        <a href="{% url 'login' %}">Log In</a>
+    {% endif %}
+{% endblock content %}
