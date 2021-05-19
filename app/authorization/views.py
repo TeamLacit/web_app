@@ -1,13 +1,13 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-from authorization.form import LoginForm
+#from authorization.forms import LoginForm
 from django.contrib.auth import authenticate, login as impl_login
 from django.contrib import messages
 
 
 def login(request):
-    """Авторизация"""
-    if request.method == "POST":
+    pass
+    """if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(email=form.cleaned_data["email"], password=form.cleaned_data["password"])
@@ -19,5 +19,5 @@ def login(request):
         else:
             messages.error(request, "Invalid email or password.")
     form = LoginForm()
-    return render(request, "login.html", context={"form": form})
+    return render(request, "login.html", context={"form": form})"""
 
