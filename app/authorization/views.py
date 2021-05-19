@@ -11,7 +11,7 @@ def login(request):
         form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(email=form.cleaned_data["email"], password=form.cleaned_data["password"])
-            if user is not None
+            if user is not None:
                 impl_login(request, user)
                 return HttpResponseRedirect("/")
             else:
