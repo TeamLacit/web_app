@@ -75,9 +75,9 @@
                 <p>First name: {{ user.last_name }}</p>
                 <p>Last name: {{ user.last_name }}</p>
                 <p>Email: {{ user.email }}</p>
-                <p>Company: </p>
-                <p>Department: </p>
-                <p>Post: </p>
+                <p>Company: {{ user.department.company.name }}</p>
+                <p>Department: {{ user.department.name }}</p>
+                <p>Post: {{ user.post }}</p>
             </div>
             <div class="exer">
                 <p class="exer1"><a href="{% url 'change-data' %}">Изменить собственные данные</a></p>
