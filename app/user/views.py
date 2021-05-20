@@ -8,6 +8,12 @@ def index(request):
     return render(request, "user/index.html")
 
 
+def change_password_user(request):
+    """Смена пароля пользователя"""
+    if request.method == "POST":
+        pass
+
+
 def change_data_user(request):
     """Редактирование данных пользователем"""
     if request.method == "POST":

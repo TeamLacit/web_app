@@ -6,3 +6,9 @@ class ChangeDataUserForm(ModelForm):
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
+
+
+class ChangePasswordUserForm(ModelForm):
+    class Meta:
+        model = User
+        fields =['password']
