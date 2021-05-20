@@ -71,11 +71,13 @@
     <div class="page">
         <div class="user_page">
             <div class="header">
-                <h1>{{ header }}</h1>
                 <img src="{% static 'images/avatar.png' %}" alt="Avatar" class="avatar">
-                <p>Name: {{ user.name }}</p>
-                <p>Отдел: {{ department.name }} </p>
-                <p>Должность: {{ position.name }} </p>
+                <p>First name: {{ user.last_name }}</p>
+                <p>Last name: {{ user.last_name }}</p>
+                <p>Email: {{ user.email }}</p>
+                <p>Company: </p>
+                <p>Department: </p>
+                <p>Post: </p>
             </div>
             <div class="exer">
                 <p class="exer1"><a href="{% url 'change-data' %}">Изменить собственные данные</a></p>
