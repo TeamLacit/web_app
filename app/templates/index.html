@@ -12,10 +12,4 @@
           <h1><a href="{% url 'home' %}">Django blog</a></h1>
         </div>
     </header>
-    {% if user.is_authenticated %}
-        <p>Hi {{ user.email }}!</p>
-    {% else %}
-        <p>You are not logged in.</p>
-        <a href="{% url 'login' %}">Log In</a>
-    {% endif %}
 {% endblock content %}
