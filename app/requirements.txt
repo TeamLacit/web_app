@@ -7,6 +7,7 @@ cachetools==4.2.1
 certifi==2020.12.5
 chardet==4.0.0
 click==7.1.2
+convertdate==2.3.2
 cycler==0.10.0
 decorator==4.4.2
 defusedxml==0.7.1
@@ -29,6 +30,8 @@ google-auth-oauthlib==0.4.4
 google-pasta==0.2.0
 grpcio==1.34.1
 h5py==3.1.0
+hijri-converter==2.1.1
+holidays==0.11.1
 idna==2.10
 imageai==2.1.5
 itsdangerous==1.1.0
@@ -37,6 +40,7 @@ Keras==2.4.3
 keras-nightly==2.5.0.dev2021032900
 Keras-Preprocessing==1.1.2
 kiwisolver==1.3.1
+korean-lunar-calendar==0.2.1
 Markdown==3.3.4
 MarkupSafe==1.1.1
 matplotlib==3.3.4
@@ -54,6 +58,7 @@ pyasn1-modules==0.2.8
 pycryptodomex==3.9.9
 pyinstaller==4.2
 pyinstaller-hooks-contrib==2020.11
+PyMeeus==0.5.11
 pyparsing==2.4.7
 PyQt5==5.15.2
 pyqt5-plugins==5.15.2.2.0.1

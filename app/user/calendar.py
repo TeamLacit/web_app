@@ -1,5 +1,6 @@
 from datetime import date
 from calendar import monthrange
+from holidays import Belarus
 
 years = [year for year in range(date.today().year, 2009, -1)]
 months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"]
@@ -17,10 +18,15 @@ class Day:
         return self.__str__()
 
 
+def get_public_holidays(year: int, month: int) -> list:
+    """Получаем праздничные дни в Республике Беларусь"""
+    return [elem[0].day for elem in Belarus(years=year).items() if elem[0].month == month]
+
+
 def get_all_weeks_month(year: int, month: int) -> list:
     """Распределяет все дни месяца по неделям"""
-    days = [Day(num, False if date(year, month, num).weekday() in [5, 6] else True)
-            for num in range(1, monthrange(year, month)[1] + 1)]
+    days = [Day(num, False if date(year, month, num).weekday() in [5, 6] or num in get_public_holidays(year, month)
+                else True) for num in range(1, monthrange(year, month)[1] + 1)]
 
     day_week = date(year, month, 1).weekday()
     weeks = [[None for i in range(0, day_week)] + [days.pop(0) for _ in range(day_week, 7)]]
