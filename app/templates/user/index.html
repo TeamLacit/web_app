@@ -92,7 +92,49 @@
             </div>
             <div class="calendar1">
                 <h2>Calendar</h2>
-                <p>Дата {{date}}: {{task.name}}</p>
+                    <form method="POST">
+                        {% csrf_token %}
+                        <select name="month">
+                          {% for month in months %}
+                                <option value="{{ month }}" {% if forloop.counter == current_month %}selected{% endif %}>{{ month }}</option>
+                          {% endfor %}
+                        </select>
+                        <select name="year">
+                            {% for year in years %}
+                                <option value="{{ year }}" {% if year == current_year %}selected{% endif %}>{{ year }}</option>
+                            {% endfor %}
+                        </select>
+                        <button>apply</button>
+                    </form>
+                <p></p>
+                <table align="center">
+                  <tbody>
+                    <tr>
+                      <th>Monday</th>
+                      <th>Tuesday</th>
+                      <th>Wednesday</th>
+                      <th>Thursday</th>
+                      <th>Friday</th>
+                      <th>Saturday</th>
+                      <th>Sunday</th>
+                    </tr>
+                    {% for week in weeks %}
+                        <tr>
+                            {% for day in week %}
+                                <td>
+                                    {% if day is not None %}
+                                        {% if not day.is_working_day %}
+                                            <font color="red">{{ day.num }}</font>
+                                        {% else %}
+                                            {{ day.num }}
+                                        {% endif %}
+                                    {% endif %}
+                                </td>
+                            {% endfor %}
+                        </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
             </div>
         </div>
     </div>

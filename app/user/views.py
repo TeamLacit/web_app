@@ -1,11 +1,32 @@
 from django.shortcuts import render, redirect
-from user.forms import ChangeDataUserForm
+from user.forms import ChangeDataUserForm, CalendarForm
 from django.contrib import messages
+from datetime import date
+from user.calendar import get_all_weeks_month, years, months
 
 
 def index(request):
     """Главная страница пользователя"""
-    return render(request, "user/index.html")
+    today = date.today()
+
+    if request.method == "POST":
+        form = CalendarForm(request.POST)
+        if form.is_valid():
+            year, month = form.cleaned_data["year"], months.index(form.cleaned_data["month"]) + 1
+        else:
+            year, month = today.year, today.month
+    else:
+        year, month = today.year, today.month
+
+    weeks = get_all_weeks_month(year, month)
+
+    return render(request, "user/index.html", context={
+        "years": years,
+        "current_year": year,
+        "current_month": month,
+        "months": months,
+        "weeks": weeks,
+    })
 
 
 def change_password_user(request):
