@@ -1,9 +1,11 @@
+from django.http import Http404
 from django.shortcuts import render, redirect
 from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
+from user.models import Task
 
 
 def index(request):
@@ -27,12 +29,23 @@ def index(request):
         "current_month": month,
         "months": months,
         "weeks": weeks,
+        "today": today,
     })
 
 
-def tasks(request):
+def tasks(request, year, month, day):
     """Список заданий на определенный день"""
-    return render(request, "user/tasks.html")
+    if year in years and month in [i for i in range(1, 13)] and 1 <= day <= 31:
+        try:
+            get_date = date(year, month, day)
+            return render(request, "user/tasks.html", context={
+                "date": get_date,
+                "tasks": Task.objects.filter(user__id=request.user.id, date=get_date),
+            })
+        except ValueError:
+            raise Http404()
+    else:
+        raise Http404()
 
 
 def change_password_user(request):

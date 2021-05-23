@@ -18,7 +18,7 @@
             </div>
             <div class="exer">
                 <p class="exer1"><a href="{% url 'change-data' %}">Edit your own data</a></p>
-                <p class="exer1"><a href="{% url 'change-password' %}">change password</a></p>
+                <p class="exer1"><a href="{% url 'change-password' %}">Сhange password</a></p>
                 <p class="exer1"><a href="{% url 'account_logout' %}">Log out</a></p>
             </div>
         </div>
@@ -59,11 +59,9 @@
                             {% for day in week %}
                                 <td>
                                     {% if day is not None %}
-                                        {% if not day.is_working_day %}
-                                            <font color="red">{{ day.num }}</font>
-                                        {% else %}
-                                            {{ day.num }}
-                                        {% endif %}
+                                        <a href="{% url 'list-tasks' current_year current_month day.num %}">
+                                            <font color="{% if today.year == current_year and today.month == current_month and today.day == day.num %}gold{% elif not day.is_working_day %}red{% else %}white{% endif %}">{{ day.num }}</font>
+                                        </a>
                                     {% endif %}
                                 </td>
                             {% endfor %}
