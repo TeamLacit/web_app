@@ -3,12 +3,23 @@ from django.shortcuts import render, redirect
 from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.decorators import login_required
+from django.contrib.auth.decorators import login_required, user_passes_test
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 from user.models import Task
 
 
+def decorator_check_user(func):
+    """"Декоратор для проверки роли пользователя"""
+    def wrapper(request):
+        if request.user.role == 3:
+            return func(request)
+        else:
+            return redirect("/accounts/login")
+    return wrapper
+
+
+@decorator_check_user
 @login_required
 def index(request):
     """Главная страница пользователя"""
@@ -35,6 +46,7 @@ def index(request):
     })
 
 
+@decorator_check_user
 @login_required
 def tasks(request, year, month, day):
     """Список заданий на определенный день"""
@@ -51,6 +63,7 @@ def tasks(request, year, month, day):
         raise Http404()
 
 
+@decorator_check_user
 @login_required
 def change_password_user(request):
     """Смена пароля пользователя"""
@@ -69,6 +82,7 @@ def change_password_user(request):
     return render(request, "user/change_password_user.html", context={"form": form})
 
 
+@decorator_check_user
 @login_required
 def change_data_user(request):
     """Редактирование данных пользователем"""
