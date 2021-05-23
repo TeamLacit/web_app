@@ -3,11 +3,13 @@ from django.shortcuts import render, redirect
 from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
+from django.contrib.auth.decorators import login_required
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 from user.models import Task
 
 
+@login_required
 def index(request):
     """Главная страница пользователя"""
     today = date.today()
@@ -33,6 +35,7 @@ def index(request):
     })
 
 
+@login_required
 def tasks(request, year, month, day):
     """Список заданий на определенный день"""
     if year in years and month in [i for i in range(1, 13)] and 1 <= day <= 31:
@@ -48,6 +51,7 @@ def tasks(request, year, month, day):
         raise Http404()
 
 
+@login_required
 def change_password_user(request):
     """Смена пароля пользователя"""
     if request.method == "POST":
@@ -65,6 +69,7 @@ def change_password_user(request):
     return render(request, "user/change_password_user.html", context={"form": form})
 
 
+@login_required
 def change_data_user(request):
     """Редактирование данных пользователем"""
     if request.method == "POST":
