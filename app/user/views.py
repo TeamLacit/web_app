@@ -29,6 +29,11 @@ def index(request):
     })
 
 
+def tasks(request):
+    """Список заданий на определенный день"""
+    return render(request, "user/tasks.html")
+
+
 def change_password_user(request):
     """Смена пароля пользователя"""
     if request.method == "POST":

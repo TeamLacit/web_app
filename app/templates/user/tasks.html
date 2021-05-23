@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Tasks{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" href="{% static 'css/user/tasks/base.css' %}" type="text/css"/>
+{% endblock head %}
+{% block content %}
+    <ul>
+      <li>
+        <a href="#">
+          <h2>Title #1</h2>
+          <p>Text Content #1</p>
+        </a>
+      </li>
+      <li>
+        <a href="#">
+          <h2>Title #2</h2>
+          <p>Text Content #2</p>
+        </a>
+      </li>
+    </ul>
+{% endblock content %}
