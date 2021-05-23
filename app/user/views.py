@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
 from django.contrib import messages
+from django.contrib.auth.hashers import check_password
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 
@@ -39,9 +40,13 @@ def change_password_user(request):
     if request.method == "POST":
         form = ChangePasswordUserForm(request.POST)
         if form.is_valid():
+            old_password = form.cleaned_data['old_password']
+            if not check_password(old_password, request.user.password):
+                message = "wrong old password"
+                return render(request, "user/change_password_user.html", context={"form": form, "err_message": message})
             request.user.set_password(form.cleaned_data["password"])
             request.user.save()
-            return redirect(index)
+            return redirect("/accounts/login")
     else:
         form = ChangePasswordUserForm()
     return render(request, "user/change_password_user.html", context={"form": form})
