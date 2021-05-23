@@ -9,7 +9,7 @@
         <div class="user_page">
             <div class="header">
                 <img src="{% static 'images/avatar.png' %}" alt="Avatar" class="avatar">
-                <p>First name: {{ user.last_name }}</p>
+                <p>First name: {{ user.first_name }}</p>
                 <p>Last name: {{ user.last_name }}</p>
                 <p>Email: {{ user.email }}</p>
                 <p>Company: {{ user.department.company.name }}</p>
@@ -18,6 +18,7 @@
             </div>
             <div class="exer">
                 <p class="exer1"><a href="{% url 'change-data' %}">Edit your own data</a></p>
+                <p class="exer1"><a href="{% url 'change-password' %}">change password</a></p>
                 <p class="exer1"><a href="{% url 'account_logout' %}">Log out</a></p>
             </div>
         </div>

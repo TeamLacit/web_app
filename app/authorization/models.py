@@ -8,6 +8,7 @@ class User(AbstractUser):
     role = models.SmallIntegerField(default=1)
     # department = models.ForeignKey(Department, on_delete = models.RESTRICT)
     department = models.IntegerField(null=True)
+    post = models.CharField(max_length=200)
     block = models.BooleanField(default=False)
 
     def __str__(self):

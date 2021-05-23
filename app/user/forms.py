@@ -1,4 +1,5 @@
 from django.forms import ModelForm, Form, IntegerField, CharField
+from django import forms
 from authorization.models import User
 from user.calendar import years, months
 
@@ -9,11 +10,16 @@ class ChangeDataUserForm(ModelForm):
         fields = ['first_name', 'last_name', 'email']
 
 
-class ChangePasswordUserForm(ModelForm):
-    class Meta:
-        model = User
-        fields =['password']
+class ChangePasswordUserForm(Form):
+    old_password = forms.CharField(label="old password", widget=forms.PasswordInput)
+    password = forms.CharField(label="new password", widget=forms.PasswordInput)
+    password2 = forms.CharField(label="repeat password", widget=forms.PasswordInput)
 
+    def clean_password2(self):
+        cd = self.cleaned_data
+        if cd['password'] != cd['password2']:
+            raise forms.ValidationError("passwords don't match")
+        return cd['password2']
 
 class CalendarForm(Form):
     year = IntegerField(required=False)

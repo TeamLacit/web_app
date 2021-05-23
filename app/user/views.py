@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect
-from user.forms import ChangeDataUserForm, CalendarForm
+from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
 from django.contrib import messages
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
@@ -37,7 +37,14 @@ def tasks(request):
 def change_password_user(request):
     """Смена пароля пользователя"""
     if request.method == "POST":
-        pass
+        form = ChangePasswordUserForm(request.POST)
+        if form.is_valid():
+            request.user.set_password(form.cleaned_data["password"])
+            request.user.save()
+            return redirect(index)
+    else:
+        form = ChangePasswordUserForm()
+    return render(request, "user/change_password_user.html", context={"form": form})
 
 
 def change_data_user(request):
