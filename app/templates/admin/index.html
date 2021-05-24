@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Admin page</title>
+</head>
+<style>
+  html{
+  background-color: black;
+  font-family: "Calibri Light";
+}
+
+  button{
+    background: blueviolet;
+    color: white;
+    text-align: center;
+    padding: 5px;
+    margin: 5px;
+    border-radius: 20px;
+    border: none;
+    width: 80%;
+    height: 80%;
+
+}
+  .avatar {
+    vertical-align: middle;
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    border-color: rgb(10, 10, 10);
+    border-width: 3px;
+    border-style: groove;
+
+}
+  .user_page{
+    background: linear-gradient( rgba(221,3,228,0.5), rgba(86,17,236,0.5));
+    padding:10px ;
+    border-radius: 20px 20px 0 0;
+    text-align: center;
+    color: white;
+    background-size: 40%;
+    width: 100%;
+    height: 20%;
+    margin: 5px;
+
+}
+  .exer1{
+    background: rgba(255, 255, 255, 0.26);
+    width: 100%;
+    height: 10%;
+    margin: 5px;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+
+}
+  .work{
+    color:black;
+    border-radius: 0 0 20px 20px;
+    text-align: center;
+    background: white;
+    width: 100%;
+    height: 90%;
+    margin: 5px;
+    padding: 10px;
+  }
+
+  input{
+    padding: 5px;
+    margin: 5px;
+    border-radius: 20px;
+    border: none;
+    width: 80%;
+    height: 80%;
+    text-align: center;
+  }
+</style>
+<body>
+<div class="page">
+    <div class="user_page">
+        <div class="header">
+             <h1>Welcome </h1>
+              <img src="avatar.png" alt="Avatar" class="avatar">
+              <p>Name: {{ user.name}} </p>
+              <p>Position: {{position.name}} </p>
+              <p>Email: {{email}} </p>
+        </div>
+    </div>
+    <div class="exer">
+      <form class="exer1">
+        {%block exer1%}
+        {%endblock%}
+      </form>
+    </div>
+  <div class="work">
+    <p>Table</p>
+    {%block work%}
+    {%endblock%}
+  </div>
+</div>
+
+</body>
+</html>

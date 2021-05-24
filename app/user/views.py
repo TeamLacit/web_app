@@ -32,8 +32,8 @@ def decorator_check_date(func):
     return wrapped
 
 
-@decorator_check_user
 @login_required
+@decorator_check_user
 def index(request):
     """Главная страница пользователя"""
     today = date.today()
@@ -58,9 +58,8 @@ def index(request):
         "today": today,
     })
 
-
-@decorator_check_user
 @login_required
+@decorator_check_user
 @decorator_check_date
 def tasks(request, year, month, day):
     """Список заданий на определенный день"""
@@ -71,8 +70,8 @@ def tasks(request, year, month, day):
     })
 
 
-@decorator_check_user
 @login_required
+@decorator_check_user
 def change_password_user(request):
     """Смена пароля пользователя"""
     if request.method == "POST":
@@ -90,8 +89,8 @@ def change_password_user(request):
     return render(request, "user/change_password_user.html", context={"form": form})
 
 
-@decorator_check_user
 @login_required
+@decorator_check_user
 def change_data_user(request):
     """Редактирование данных пользователем"""
     if request.method == "POST":
@@ -108,8 +107,8 @@ def change_data_user(request):
     return render(request, "user/change_data_user.html", context={"form": form})
 
 
-@decorator_check_user
 @login_required
+@decorator_check_user
 @decorator_check_date
 def create_task(request, year, month, day):
     """"""
