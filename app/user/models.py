@@ -1,5 +1,5 @@
 from django.db import models
-from authorization.models import User
+from django.contrib.auth.models import AbstractUser
 
 
 class Company(models.Model):
@@ -15,6 +15,16 @@ class Department(models.Model):
 
     def __str__(self):
         return self.name
+
+
+class User(AbstractUser):
+    role = models.SmallIntegerField(default=1)
+    department = models.ForeignKey(Department, on_delete=models.RESTRICT)
+    post = models.CharField(max_length=200)
+    block = models.BooleanField(default=False)
+
+    def __str__(self):
+        return self.email
 
 
 class Project(models.Model):
