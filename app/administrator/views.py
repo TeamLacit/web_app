@@ -29,7 +29,9 @@ def invite_user(request):
                 user.role = 3
                 user.save()
                 send_mail('Регистрация',
-                          'Приглашаем вас пройти регистрацию в приложении “Система учета рабочего времени сотрудников”',
+                          f'Уважаемый {user.first_name} {user.last_name}, приглашаем вас пройти регистрацию в приложении'
+                          f' “Система учета рабочего времени сотрудников”. Для регистрации перейдите по ссылке '
+                          f'http://127.0.0.1:8000/accounts/registration/{user.id}/',
                           settings.EMAIL_HOST_USER,
                           [user.email])
                 return redirect(index)

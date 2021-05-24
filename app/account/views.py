@@ -1,8 +1,9 @@
 from django.contrib.auth.decorators import login_required
 from django.shortcuts import render, redirect
-from account.forms import LoginForm
+from account.forms import LoginForm, RegisterForm
 from django.contrib.auth import authenticate, login as impl_login, logout as impl_logout
 from django.contrib import messages
+
 
 
 def login(request):
@@ -24,3 +25,8 @@ def login(request):
 def logout(request):
     impl_logout(request)
     return redirect(login)
+
+
+def registration(request, id):
+    form = RegisterForm()
+    return render(request, "account/registration.html", context={"form": form})
