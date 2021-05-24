@@ -3,13 +3,30 @@
 {% block title %}Director{% endblock title %}
 {% block head %}
   <link href="{% static 'css/director/base.css' %}" rel="stylesheet">
+  <link href="{% static 'css/director/blocks.css' %}" rel="stylesheet">
 {% endblock head %}
 {% block content %}
-  <ul class="push">
-    <li>Элемент списка</li>
-    <li>Элемент списка</li>
-    <li>Элемент списка</li>
-    <li>Элемент списка</li>
-    <li>Элемент списка</li>
-  </ul>
+    <div id="content">
+      <div id="left">
+        <p align="center"><img src="{% static 'images/avatar.png' %}" width = "50" height = "50" alt="Avatar"></p>
+        <p>First name: {{ user.first_name }}</p>
+        <p>Last name: {{ user.last_name }}</p>
+        <p>Email: {{ user.email }}</p>
+        <p>Company: {{ user.department.company.name }}</p>
+        <p>Department: {{ user.department.name }}</p>
+        <p>Post: Director</p>
+      </div>
+      <div id="right">Правые блоки</div>
+      <div id="center">
+        <p>Список пользователей отдела</p>
+        <ul class="push">
+          <li>Элемент списка</li>
+          <li>Элемент списка</li>
+          <li>Элемент списка</li>
+          <li>Элемент списка</li>
+          <li>Элемент списка</li>
+        </ul>
+      </div>
+    </div>
+  <div class="clear"></div>
 {% endblock content %}

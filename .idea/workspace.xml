@@ -1,9 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added the director app">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added the index view to the director app">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app/urls.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/apps.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/migrations/__init__.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/tests.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/authorization/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/director/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/static/css/director/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/css/director/base.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/director/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/director/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -167,7 +179,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621849350725</updated>
     </task>
-    <option name="localTasksCounter" value="5" />
+    <task id="LOCAL-00005" summary="Added the index view to the director app">
+      <created>1621850960800</created>
+      <option name="number" value="00005" />
+      <option name="presentableId" value="LOCAL-00005" />
+      <option name="project" value="LOCAL" />
+      <updated>1621850960800</updated>
+    </task>
+    <option name="localTasksCounter" value="6" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -187,7 +206,8 @@
     <MESSAGE value="Changed the Task model. Added the CreateTask form. File created create-task.html" />
     <MESSAGE value="Changed settings" />
     <MESSAGE value="Added the director app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the director app" />
+    <MESSAGE value="Added the index view to the director app" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added the index view to the director app" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>

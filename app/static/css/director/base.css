@@ -5,7 +5,7 @@
 .push li {
   position: relative;
   padding: 20px 0 20px 40px;
-  color: #D29D25;
+  color: #000;
   font-variant: small-caps;
   font-weight: bold;
   cursor: pointer;

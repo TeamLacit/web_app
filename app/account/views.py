@@ -1,6 +1,6 @@
 from django.http import HttpResponseRedirect
 from django.shortcuts import render
-#from authorization.forms import LoginForm
+#from account.forms import LoginForm
 from django.contrib.auth import authenticate, login as impl_login
 from django.contrib import messages
 
