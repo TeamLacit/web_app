@@ -1,21 +1,18 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added the index view to the director app">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Rename authorization to account">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app/settings.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/account/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/account/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/account/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/account/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/views.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/app/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app/urls.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/admin.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/apps.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/apps.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/migrations/__init__.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/migrations/__init__.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/models.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/tests.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/tests.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/authorization/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/account/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/director/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/static/css/director/base.css" beforeDir="false" afterPath="$PROJECT_DIR$/app/static/css/director/base.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/director/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/director/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/db.sqlite3" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/login.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/login.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/migrations/0001_initial.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/models.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -25,8 +22,8 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="Python Script" />
         <option value="HTML File" />
+        <option value="Python Script" />
       </list>
     </option>
   </component>
@@ -186,7 +183,14 @@
       <option name="project" value="LOCAL" />
       <updated>1621850960800</updated>
     </task>
-    <option name="localTasksCounter" value="6" />
+    <task id="LOCAL-00006" summary="Rename authorization to account">
+      <created>1621856893580</created>
+      <option name="number" value="00006" />
+      <option name="presentableId" value="LOCAL-00006" />
+      <option name="project" value="LOCAL" />
+      <updated>1621856893580</updated>
+    </task>
+    <option name="localTasksCounter" value="7" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -207,17 +211,7 @@
     <MESSAGE value="Changed settings" />
     <MESSAGE value="Added the director app" />
     <MESSAGE value="Added the index view to the director app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the index view to the director app" />
-  </component>
-  <component name="XDebuggerManager">
-    <breakpoint-manager>
-      <breakpoints>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/app/app/settings.py</url>
-          <line>12</line>
-          <option name="timeStamp" value="1" />
-        </line-breakpoint>
-      </breakpoints>
-    </breakpoint-manager>
+    <MESSAGE value="Rename authorization to account" />
+    <option name="LAST_COMMIT_MESSAGE" value="Rename authorization to account" />
   </component>
 </project>

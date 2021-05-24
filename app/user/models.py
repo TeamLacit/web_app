@@ -1,5 +1,6 @@
 from django.db import models
 from django.contrib.auth.models import AbstractUser
+from account.models import UserManager
 
 
 class Company(models.Model):
@@ -27,10 +28,17 @@ class Department(models.Model):
 
 
 class User(AbstractUser):
+    username = None
+    email = models.EmailField(unique=True)
     role = models.SmallIntegerField(default=1)
-    department = models.ForeignKey(Department, on_delete=models.RESTRICT)
+    department = models.ForeignKey(Department, on_delete=models.RESTRICT, null=True)
     post = models.CharField(max_length=200)
     block = models.BooleanField(default=False)
+
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
 
     def __str__(self):
         return self.email
