@@ -28,7 +28,7 @@ class Project(models.Model):
 
 class Task(models.Model):
     date = models.DateField()
-    time_worked = models.TimeField()
+    time_worked = models.PositiveBigIntegerField()
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)
     user = models.ForeignKey(User, on_delete=models.RESTRICT)
     description = models.TextField()

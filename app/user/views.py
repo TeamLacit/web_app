@@ -1,9 +1,9 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm
+from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
-from django.contrib.auth.decorators import login_required, user_passes_test
+from django.contrib.auth.decorators import login_required
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 from user.models import Task
@@ -11,12 +11,25 @@ from user.models import Task
 
 def decorator_check_user(func):
     """"Декоратор для проверки роли пользователя"""
-    def wrapper(request):
+    def wrapped(request, **kwargs):
         if request.user.role == 3:
-            return func(request)
+            return func(request, **kwargs)
         else:
             return redirect("/accounts/login")
-    return wrapper
+    return wrapped
+
+
+def decorator_check_date(func):
+    """Декоратор для проверки даты"""
+    def wrapped(request, year, month, day):
+        if year in years and month in [i for i in range(1, 13)] and 1 <= day <= 31:
+            try:
+                return func(request, year, month, day)
+            except ValueError:
+                raise Http404()
+        else:
+            raise Http404()
+    return wrapped
 
 
 @decorator_check_user
@@ -48,19 +61,14 @@ def index(request):
 
 @decorator_check_user
 @login_required
+@decorator_check_date
 def tasks(request, year, month, day):
     """Список заданий на определенный день"""
-    if year in years and month in [i for i in range(1, 13)] and 1 <= day <= 31:
-        try:
-            get_date = date(year, month, day)
-            return render(request, "user/tasks.html", context={
-                "date": get_date,
-                "tasks": Task.objects.filter(user__id=request.user.id, date=get_date),
-            })
-        except ValueError:
-            raise Http404()
-    else:
-        raise Http404()
+    get_date = date(year, month, day)
+    return render(request, "user/tasks.html", context={
+        "date": get_date,
+        "tasks": Task.objects.filter(user__id=request.user.id, date=get_date),
+    })
 
 
 @decorator_check_user
@@ -98,3 +106,25 @@ def change_data_user(request):
             messages.error(request, "Invalid data")
     form = ChangeDataUserForm(instance=request.user)
     return render(request, "user/change_data_user.html", context={"form": form})
+
+
+@decorator_check_user
+@login_required
+@decorator_check_date
+def create_task(request, year, month, day):
+    if request.method == "POST":
+        form = TaskForm(request.POST)
+        if form.is_valid():
+            Task.objects.create(**{
+                "project": form.cleaned_data["project"],
+                "time_worked": form.cleaned_data["time_worked"],
+                "description": form.cleaned_data["description"],
+                "date": date(year, month, day),
+                "user": request.user,
+            })
+            return redirect(tasks, year, month, day)
+        else:
+            messages.error(request, "Invalid data")
+    return render(request, "user/create_task.html", context={
+        "form": TaskForm(),
+    })

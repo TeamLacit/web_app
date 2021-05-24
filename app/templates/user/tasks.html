@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}Tasks{% endblock title %}
+{% block title %}The list tasks for {{ date }}{% endblock title %}
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/user/tasks/base.css' %}" type="text/css"/>
 {% endblock head %}
@@ -16,5 +16,14 @@
                 </a>
             </li>
         {% endfor %}
+        <li>
+            <a href="#">
+                <p>Add a task</p>
+                <p>&nbsp;</p>
+                <form action="{% url 'create-task' date.year date.month date.day %}">
+                    <p align="center"><button style="border-radius: 50%;font-size: 24px">&nbsp;+&nbsp;</button></p>
+                </form>
+            </a>
+        </li>
     </ul>
 {% endblock content %}

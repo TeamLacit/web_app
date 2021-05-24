@@ -1,6 +1,7 @@
 from django.forms import ModelForm, Form, IntegerField, CharField
 from django import forms
 from authorization.models import User
+from user.models import Task
 from user.calendar import years, months
 
 
@@ -21,6 +22,7 @@ class ChangePasswordUserForm(Form):
             raise forms.ValidationError("passwords don't match")
         return cd['password2']
 
+
 class CalendarForm(Form):
     year = IntegerField(required=False)
     month = CharField(required=False)
@@ -35,3 +37,9 @@ class CalendarForm(Form):
             return False
 
         return True
+
+
+class TaskForm(ModelForm):
+    class Meta:
+        model = Task
+        fields = ['time_worked', 'description', 'project']

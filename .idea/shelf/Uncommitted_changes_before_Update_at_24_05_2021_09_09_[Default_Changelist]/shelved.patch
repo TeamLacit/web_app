@@ -1,0 +1,320 @@
+Index: app/templates/user/tasks.html
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>{% extends \"base.html\" %}\r\n{% load static %}\r\n{% block title %}Tasks{% endblock title %}\r\n{% block head %}\r\n    <link rel=\"stylesheet\" href=\"{% static 'css/user/tasks/base.css' %}\" type=\"text/css\"/>\r\n{% endblock head %}\r\n{% block content %}\r\n    <ul>\r\n        {% for task in tasks %}\r\n            <li>\r\n                <a href=\"#\">\r\n                    <p>Project: {{ task.project.name }}</p>\r\n                    <p>Date: {{ task.date }}</p>\r\n                    <p>Description: {{ task.description }}</p>\r\n                    <p>Worked time: {{ task.time_worked }}</p>\r\n                </a>\r\n            </li>\r\n        {% endfor %}\r\n    </ul>\r\n{% endblock content %}
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/templates/user/tasks.html b/app/templates/user/tasks.html
+--- a/app/templates/user/tasks.html	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/app/templates/user/tasks.html	(date 1621783176976)
+@@ -1,6 +1,6 @@
+ {% extends "base.html" %}
+ {% load static %}
+-{% block title %}Tasks{% endblock title %}
++{% block title %}The list tasks for {{ date }}{% endblock title %}
+ {% block head %}
+     <link rel="stylesheet" href="{% static 'css/user/tasks/base.css' %}" type="text/css"/>
+ {% endblock head %}
+@@ -16,5 +16,17 @@
+                 </a>
+             </li>
+         {% endfor %}
++        <li>
++            <a href="#">
++                <p>Add a task</p>
++                <p>&nbsp;</p>
++                <form action="{% url 'add-task' %}" method="GET">
++                    <input type="hidden" name="year" value="{{ date.year }}">
++                    <input type="hidden" name="month" value="{{ date.month }}">
++                    <input type="hidden" name="day" value="{{ date.day }}">
++                    <p align="center"><button style="border-radius: 50%;font-size: 24px">&nbsp;+&nbsp;</button></p>
++                </form>
++            </a>
++        </li>
+     </ul>
+ {% endblock content %}
+\ No newline at end of file
+Index: app/user/forms.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.forms import ModelForm, Form, IntegerField, CharField\r\nfrom django import forms\r\nfrom authorization.models import User\r\nfrom user.calendar import years, months\r\n\r\n\r\nclass ChangeDataUserForm(ModelForm):\r\n    class Meta:\r\n        model = User\r\n        fields = ['first_name', 'last_name', 'email']\r\n\r\n\r\nclass ChangePasswordUserForm(Form):\r\n    old_password = forms.CharField(label=\"old password\", widget=forms.PasswordInput)\r\n    password = forms.CharField(label=\"new password\", widget=forms.PasswordInput)\r\n    password2 = forms.CharField(label=\"repeat password\", widget=forms.PasswordInput)\r\n\r\n    def clean_password2(self):\r\n        cd = self.cleaned_data\r\n        if cd['password'] != cd['password2']:\r\n            raise forms.ValidationError(\"passwords don't match\")\r\n        return cd['password2']\r\n\r\nclass CalendarForm(Form):\r\n    year = IntegerField(required=False)\r\n    month = CharField(required=False)\r\n\r\n    def is_valid(self):\r\n        valid = super(CalendarForm, self).is_valid()\r\n\r\n        if not valid:\r\n            return valid\r\n\r\n        if self.cleaned_data['year'] not in years or self.cleaned_data['month'] not in months:\r\n            return False\r\n\r\n        return True
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/user/forms.py b/app/user/forms.py
+--- a/app/user/forms.py	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/app/user/forms.py	(date 1621836592931)
+@@ -1,6 +1,7 @@
+ from django.forms import ModelForm, Form, IntegerField, CharField
+ from django import forms
+ from authorization.models import User
++from
+ from user.calendar import years, months
+ 
+ 
+@@ -21,6 +22,7 @@
+             raise forms.ValidationError("passwords don't match")
+         return cd['password2']
+ 
++
+ class CalendarForm(Form):
+     year = IntegerField(required=False)
+     month = CharField(required=False)
+@@ -34,4 +36,10 @@
+         if self.cleaned_data['year'] not in years or self.cleaned_data['month'] not in months:
+             return False
+ 
+-        return True
+\ No newline at end of file
++        return True
++
++
++class TaskForm(ModelForm):
++    class Meta:
++        model = User
++        fields = ['first_name', 'last_name', 'email']
+Index: app/user/urls.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>from django.urls import path\r\nfrom user import views\r\n\r\nurlpatterns = [\r\n    path('list-tasks/<int:year>/<int:month>/<int:day>/', views.tasks, name='list-tasks'),\r\n    path('change-data/', views.change_data_user, name='change-data'),\r\n    path('change-password/', views.change_password_user, name='change-password'),\r\n    path('', views.index),\r\n]\r\n
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/app/user/urls.py b/app/user/urls.py
+--- a/app/user/urls.py	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/app/user/urls.py	(date 1621782996619)
+@@ -5,5 +5,6 @@
+     path('list-tasks/<int:year>/<int:month>/<int:day>/', views.tasks, name='list-tasks'),
+     path('change-data/', views.change_data_user, name='change-data'),
+     path('change-password/', views.change_password_user, name='change-password'),
++    path('add-task/', views.change_data_user, name='add-task'),
+     path('', views.index),
+ ]
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/.gitignore\" beforeDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/misc.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/misc.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/modules.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/modules.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/Проект.iml\" beforeDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1sw8sYEna1Etgwm6wvv9lEuSSdi\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"D:/Работа/Проект\" />\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1621772498950</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1621772498950</updated>\r\n    </task>\r\n    <servers />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/.idea/workspace.xml	(date 1621784094525)
+@@ -1,13 +1,15 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="">
+-      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/inspectionProfiles/profiles_settings.xml" afterDir="false" />
++    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added tasks">
++      <change beforePath="$PROJECT_DIR$/.idea/ggg.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/Проект.iml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/modules.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/modules.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/.idea/Проект.iml" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/db.sqlite3" beforeDir="false" afterPath="$PROJECT_DIR$/app/db.sqlite3" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/templates/user/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/tasks.html" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/user/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/forms.py" afterDir="false" />
++      <change beforePath="$PROJECT_DIR$/app/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/urls.py" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -25,7 +27,105 @@
+   <component name="PropertiesComponent">
+     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+-    <property name="last_opened_file_path" value="D:/Работа/Проект" />
++    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
++  </component>
++  <component name="RunManager">
++    <configuration default="true" type="PythonConfigurationType" factoryName="Python">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <envs>
++        <env name="PYTHONUNBUFFERED" value="1" />
++      </envs>
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="SCRIPT_NAME" value="" />
++      <option name="PARAMETERS" value="" />
++      <option name="SHOW_COMMAND_LINE" value="false" />
++      <option name="EMULATE_TERMINAL" value="false" />
++      <option name="MODULE_MODE" value="false" />
++      <option name="REDIRECT_INPUT" value="false" />
++      <option name="INPUT_FILE" value="" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="Tox" factoryName="Tox">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="docs" factoryName="Docutils task">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="docutils_input_file" value="" />
++      <option name="docutils_output_file" value="" />
++      <option name="docutils_params" value="" />
++      <option name="docutils_task" value="" />
++      <option name="docutils_open_in_browser" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="docs" factoryName="Sphinx task">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="docutils_input_file" value="" />
++      <option name="docutils_output_file" value="" />
++      <option name="docutils_params" value="" />
++      <option name="docutils_task" value="" />
++      <option name="docutils_open_in_browser" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="tests" factoryName="Doctests">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="SCRIPT_NAME" value="" />
++      <option name="CLASS_NAME" value="" />
++      <option name="METHOD_NAME" value="" />
++      <option name="FOLDER_NAME" value="" />
++      <option name="TEST_TYPE" value="TEST_SCRIPT" />
++      <option name="PATTERN" value="" />
++      <option name="USE_PATTERN" value="false" />
++      <method v="2" />
++    </configuration>
++    <configuration default="true" type="tests" factoryName="Unittests">
++      <module name="Проект" />
++      <option name="INTERPRETER_OPTIONS" value="" />
++      <option name="PARENT_ENVS" value="true" />
++      <option name="SDK_HOME" value="" />
++      <option name="WORKING_DIRECTORY" value="" />
++      <option name="IS_MODULE_SDK" value="false" />
++      <option name="ADD_CONTENT_ROOTS" value="true" />
++      <option name="ADD_SOURCE_ROOTS" value="true" />
++      <option name="_new_additionalArguments" value="&quot;&quot;" />
++      <option name="_new_target" value="&quot;&quot;" />
++      <option name="_new_targetType" value="&quot;PATH&quot;" />
++      <method v="2" />
++    </configuration>
+   </component>
+   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+   <component name="TaskManager">
+@@ -36,6 +136,30 @@
+       <option name="presentableId" value="Default" />
+       <updated>1621772498950</updated>
+     </task>
++    <task id="LOCAL-00001" summary="Added tasks">
++      <created>1621773329643</created>
++      <option name="number" value="00001" />
++      <option name="presentableId" value="LOCAL-00001" />
++      <option name="project" value="LOCAL" />
++      <updated>1621773329643</updated>
++    </task>
++    <option name="localTasksCounter" value="2" />
+     <servers />
+   </component>
++  <component name="Vcs.Log.Tabs.Properties">
++    <option name="TAB_STATES">
++      <map>
++        <entry key="MAIN">
++          <value>
++            <State />
++          </value>
++        </entry>
++      </map>
++    </option>
++    <option name="oldMeFiltersMigrated" value="true" />
++  </component>
++  <component name="VcsManagerConfiguration">
++    <MESSAGE value="Added tasks" />
++    <option name="LAST_COMMIT_MESSAGE" value="Added tasks" />
++  </component>
+ </project>
+\ No newline at end of file
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.9 (ggg)\" project-jdk-type=\"Python SDK\" />\r\n  <component name=\"PyCharmProfessionalAdvertiser\">\r\n    <option name=\"shown\" value=\"true\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/.idea/misc.xml	(date 1621780301136)
+@@ -1,6 +1,6 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (ggg)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (Проект)" project-jdk-type="Python SDK" />
+   <component name="PyCharmProfessionalAdvertiser">
+     <option name="shown" value="true" />
+   </component>
+Index: .idea/modules.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectModuleManager\">\r\n    <modules>\r\n      <module fileurl=\"file://$PROJECT_DIR$/.idea/ggg.iml\" filepath=\"$PROJECT_DIR$/.idea/ggg.iml\" />\r\n    </modules>\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/modules.xml b/.idea/modules.xml
+--- a/.idea/modules.xml	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/.idea/modules.xml	(date 1621780382751)
+@@ -2,7 +2,7 @@
+ <project version="4">
+   <component name="ProjectModuleManager">
+     <modules>
+-      <module fileurl="file://$PROJECT_DIR$/.idea/ggg.iml" filepath="$PROJECT_DIR$/.idea/ggg.iml" />
++      <module fileurl="file://$PROJECT_DIR$/.idea/Проект.iml" filepath="$PROJECT_DIR$/.idea/Проект.iml" />
+     </modules>
+   </component>
+ </project>
+\ No newline at end of file
+Index: .idea/ggg.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/ggg.iml b/.idea/Проект.iml
+rename from .idea/ggg.iml
+rename to .idea/Проект.iml
+--- a/.idea/ggg.iml	(revision 66a25178a2fe7e7eca3b2353fafc9fc8fe5f5470)
++++ b/.idea/Проект.iml	(date 1621780301129)
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/venv" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.9 (Проект)" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+   <component name="PyDocumentationSettings">
