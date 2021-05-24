@@ -62,6 +62,7 @@ INSTALLED_APPS = [
     'main',
     'authorization',
     'user',
+    'director',
 ]
 
 MIDDLEWARE = [

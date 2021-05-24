@@ -112,6 +112,7 @@ def change_data_user(request):
 @login_required
 @decorator_check_date
 def create_task(request, year, month, day):
+    """"""
     if request.method == "POST":
         form = TaskForm(request.POST)
         if form.is_valid():
@@ -126,5 +127,5 @@ def create_task(request, year, month, day):
         else:
             messages.error(request, "Invalid data")
     return render(request, "user/create_task.html", context={
-        "form": TaskForm({"project": request.user.department.project}),
+        "form": TaskForm(),
     })
