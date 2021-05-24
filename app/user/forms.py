@@ -1,7 +1,6 @@
 from django.forms import ModelForm, Form, IntegerField, CharField
 from django import forms
-from authorization.models import User
-from user.models import Task
+from user.models import Task, User
 from user.calendar import years, months
 
 
