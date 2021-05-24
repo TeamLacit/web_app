@@ -9,9 +9,18 @@ class Company(models.Model):
         return self.name
 
 
+class Project(models.Model):
+    name = models.CharField(max_length=200)
+    company = models.ForeignKey(Company, on_delete=models.RESTRICT)
+
+    def __str__(self):
+        return self.name
+
+
 class Department(models.Model):
     name = models.CharField(max_length=200)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT)
+    project = models.ManyToManyField(Project)
 
     def __str__(self):
         return self.name
@@ -25,15 +34,6 @@ class User(AbstractUser):
 
     def __str__(self):
         return self.email
-
-
-class Project(models.Model):
-    name = models.CharField(max_length=200)
-    company = models.ForeignKey(Company, on_delete=models.RESTRICT)
-    department = models.ManyToManyField(Department)
-
-    def __str__(self):
-        return self.name
 
 
 class Task(models.Model):
