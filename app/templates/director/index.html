@@ -16,16 +16,16 @@
         <p>Department: {{ user.department.name }}</p>
         <p>Post: Director</p>
       </div>
-      <div id="right">Правые блоки</div>
       <div id="center">
         <p>Список пользователей отдела</p>
         <ul class="push">
-          <li>Элемент списка</li>
-          <li>Элемент списка</li>
-          <li>Элемент списка</li>
-          <li>Элемент списка</li>
-          <li>Элемент списка</li>
+          {% for elem in users %}
+            <li><a href="{% url 'user-data' elem.id %}">{{ elem.first_name }} {{ elem.last_name }}</a></li>
+          {% endfor %}
         </ul>
+        <form action="{% url 'users-data-selection' %}">
+          <button>Selection</button>
+        </form>
       </div>
     </div>
   <div class="clear"></div>
