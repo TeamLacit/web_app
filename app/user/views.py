@@ -79,8 +79,8 @@ def change_password_user(request):
         if form.is_valid():
             old_password = form.cleaned_data['old_password']
             if not check_password(old_password, request.user.password):
-                message = "wrong old password"
-                return render(request, "user/change_password_user.html", context={"form": form, "err_message": message})
+                messages.error(request, "wrong old password!")
+                return render(request, "user/change_password_user.html", context={"form": form})
             request.user.set_password(form.cleaned_data["password"])
             request.user.save()
             return redirect("/accounts/login")
