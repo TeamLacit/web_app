@@ -1,6 +1,7 @@
 {% extends "base.html" %}
 {% block title %}Invite new user{% endblock title %}
 {% block content%}
+    <p></p>
 <form method="post">
     {% csrf_token %}
     {{ form.as_p }}

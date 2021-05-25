@@ -7,8 +7,9 @@ class LoginForm(Form):
 
 
 class RegisterForm(Form):
-    password = CharField(label="new password", widget=PasswordInput)
+    password = CharField(label="password", widget=PasswordInput)
     password2 = CharField(label="repeat password", widget=PasswordInput)
+    code = CharField(label="access code")
 
     def clean_password2(self):
         cd = self.cleaned_data

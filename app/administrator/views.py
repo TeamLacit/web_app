@@ -27,11 +27,17 @@ def invite_user(request):
                 user.department = form.cleaned_data["department"]
                 user.post = form.cleaned_data["post"]
                 user.role = 3
+                while True:
+                    code = user.generate_code()
+                    if not UnregisteredUser.objects.filter(code=code):
+                        user.code = code
+                        break
                 user.save()
                 send_mail('Регистрация',
                           f'Уважаемый {user.first_name} {user.last_name}, приглашаем вас пройти регистрацию в приложении'
-                          f' “Система учета рабочего времени сотрудников”. Для регистрации перейдите по ссылке '
-                          f'http://127.0.0.1:8000/accounts/registration/{user.id}/',
+                          f' “Система учета рабочего времени сотрудников”.\nДля регистрации перейдите по ссылке '
+                          f'http://127.0.0.1:8000/accounts/registration/\n'
+                          f'Код доступа: {user.code}',
                           settings.EMAIL_HOST_USER,
                           [user.email])
                 return redirect(index)
