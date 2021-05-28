@@ -42,3 +42,10 @@ class TaskForm(ModelForm):
     class Meta:
         model = Task
         fields = ['time_worked', 'description', 'project']
+
+    def __init__(self, *args, **kwargs):
+        user = kwargs.pop('user', None)
+        super(TaskForm, self).__init__(*args, **kwargs)
+
+        if user:
+            self.fields['project'].queryset = user.department.project.all()

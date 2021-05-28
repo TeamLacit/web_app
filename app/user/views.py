@@ -32,6 +32,16 @@ def decorator_check_date(func):
     return wrapped
 
 
+def decorator_handles_task_DoesNotExist(func):
+    """Декоратор обрабатывайщий исключение Task.DoesNotExist"""
+    def wrapped(request, **kwargs):
+        try:
+            return func(request, **kwargs)
+        except Task.DoesNotExist:
+            raise Http404()
+    return wrapped
+
+
 @login_required
 @decorator_check_user
 def index(request):
@@ -111,9 +121,9 @@ def change_data_user(request):
 @decorator_check_user
 @decorator_check_date
 def create_task(request, year, month, day):
-    """"""
+    """Добавления задания"""
     if request.method == "POST":
-        form = TaskForm(request.POST)
+        form = TaskForm(request.POST, user=request.user)
         if form.is_valid():
             Task.objects.create(**{
                 "project": form.cleaned_data["project"],
@@ -125,6 +135,41 @@ def create_task(request, year, month, day):
             return redirect(tasks, year, month, day)
         else:
             messages.error(request, "Invalid data")
-    return render(request, "user/create_task.html", context={
-        "form": TaskForm(),
+    return render(request, "user/task_form.html", context={
+        "form": TaskForm(user=request.user),
+        "button_name": "Create",
     })
+
+
+@login_required
+@decorator_check_user
+@decorator_handles_task_DoesNotExist
+def edit_task(request, task_id):
+    """Редактирование задания"""
+    if request.method == "POST":
+        form = TaskForm(request.POST, user=request.user)
+        if form.is_valid():
+            Task.objects.filter(id=task_id, user=request.user).update(**{
+                "project": form.cleaned_data["project"],
+                "time_worked": form.cleaned_data["time_worked"],
+                "description": form.cleaned_data["description"],
+            })
+            task = Task.objects.get(id=task_id, user=request.user)
+            return redirect(tasks, task.date.year, task.date.month, task.date.day)
+        else:
+            messages.error(request, "Invalid data")
+    return render(request, "user/task_form.html", context={
+        "form": TaskForm(user=request.user, instance=Task.objects.get(id=task_id, user=request.user)),
+        "button_name": "Edit",
+    })
+
+
+@login_required
+@decorator_check_user
+@decorator_handles_task_DoesNotExist
+def delete_task(request, task_id):
+    """Удаление задания"""
+    task = Task.objects.get(id=task_id, user=request.user)
+    year, month, day = task.date.year, task.date.month, task.date.day
+    task.delete()
+    return redirect(tasks, year, month, day)
