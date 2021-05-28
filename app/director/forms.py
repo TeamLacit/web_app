@@ -1,4 +1,4 @@
-from django.forms import Form, DateField, ModelMultipleChoiceField
+from django.forms import Form, DateField, ModelMultipleChoiceField, ChoiceField
 from user.calendar import years
 from user.models import User
 from datetime import date
@@ -7,6 +7,8 @@ class SelectionForm(Form):
     start_date = DateField(label='From', input_formats=['%d/%m/%Y'])
     end_date = DateField(label='To', input_formats=['%d/%m/%Y'])
     users = ModelMultipleChoiceField(queryset=User.objects.filter(role=3))
+    uploading_data = ChoiceField(label='Uploading data in the format', choices=((1, 'no format'), (2, '.csv'),
+                                                                                (3, '.xlsx')))
 
     def __init__(self, *args, **kwargs):
         self.department = kwargs.pop('department', None)
