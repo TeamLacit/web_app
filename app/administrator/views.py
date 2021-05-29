@@ -2,17 +2,33 @@ from django.shortcuts import render, redirect
 from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
+from django.contrib.auth.decorators import login_required
 
 from user.models import User
 from administrator.models import UnregisteredUser
 from administrator.forms import InvitationForm
 
 
+def decorator_check_admin(func):
+    """"Декоратор для проверки роли пользователя"""
+    def wrapped(request, **kwargs):
+        if request.user.role == 1:
+            return func(request, **kwargs)
+        else:
+            return redirect("/accounts/login")
+    return wrapped
+
+
+@login_required
+@decorator_check_admin
 def index(request):
     """Главная страница админа"""
-    return render(request, "administrator/index.html")
+    users = User.objects.all()
+    return render(request, "administrator/index.html", context={'users': users})
 
 
+@login_required
+@decorator_check_admin
 def invite_user(request):
     """Приглашение пользователя на регистрацию"""
     if request.method == "POST":
@@ -26,7 +42,7 @@ def invite_user(request):
                 user.email = form.cleaned_data["email"]
                 user.department = form.cleaned_data["department"]
                 user.post = form.cleaned_data["post"]
-                user.role = 3
+                user.role = form.cleaned_data["role"]
                 while True:
                     code = user.generate_code()
                     if not UnregisteredUser.objects.filter(code=code):

@@ -94,9 +94,35 @@
       </form>
     </div>
   <div class="work">
-    <p>Table</p>
-    {%block work%}
-    {%endblock%}
+    <p>Users list</p>
+      <table>
+          <tr>
+              <th>Имя Фамилия</th>
+              <th>email</th>
+              <th>Роль</th>
+              <th>Отдел</th>
+              <th>Должность</th>
+              <th>Последний вход</th>
+          </tr>
+          {% for user in users %}
+          <tr>
+              <td>{{ user.first_name }} {{ user.last_name }}</td>
+              <td>{{ user.email }}</td>
+              <td>
+                  {% if user.role == 1 %}
+                  Admin
+                  {% elif user.role == 2 %}
+                  Director
+                  {% else %}
+                  User
+                  {% endif %}
+              </td>
+              <td>{{ user.department }}</td>
+              <td>{{ user.post }}</td>
+              <td>{{ user.last_login }}</td>
+          </tr>
+          {% endfor %}
+      </table>
   </div>
 </div>
 
