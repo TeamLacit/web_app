@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Implemented HEAD_TRACK-004">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added create_task, edit_task, delete_task">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/user/create_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/task_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/director/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/director/selection_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/selection_form.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/templates/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/index.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/user/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/tasks.html" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/forms.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/views.py" afterDir="false" />
@@ -18,13 +18,21 @@
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
       <list>
-        <option value="HTML File" />
         <option value="Python Script" />
+        <option value="HTML File" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="GitSEFilterConfiguration">
+    <file-type-list>
+      <filtered-out-file-type name="LOCAL_BRANCH" />
+      <filtered-out-file-type name="REMOTE_BRANCH" />
+      <filtered-out-file-type name="TAG" />
+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+    </file-type-list>
   </component>
   <component name="ProjectId" id="1sw8sYEna1Etgwm6wvv9lEuSSdi" />
   <component name="ProjectViewState">
@@ -35,7 +43,15 @@
     <property name="DefaultHtmlFileTemplate" value="HTML File" />
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/templates/user" />
+  </component>
+  <component name="RecentsManager">
+    <key name="CopyFile.RECENT_KEYS">
+      <recent name="D:\Работа\Проект\app\templates\user" />
+    </key>
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="D:\Работа\Проект\app\templates" />
+    </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">
@@ -102,7 +118,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622185602273</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="Added create_task, edit_task, delete_task">
+      <created>1622196674520</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1622196674520</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -126,6 +149,7 @@
     <MESSAGE value="Rename authorization to account" />
     <MESSAGE value="Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003" />
     <MESSAGE value="Implemented HEAD_TRACK-004" />
-    <option name="LAST_COMMIT_MESSAGE" value="Implemented HEAD_TRACK-004" />
+    <MESSAGE value="Added create_task, edit_task, delete_task" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added create_task, edit_task, delete_task" />
   </component>
 </project>

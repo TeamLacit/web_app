@@ -1,6 +1,6 @@
 from django.http import Http404
 from django.shortcuts import render, redirect
-from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm
+from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm, SelectionForm
 from django.contrib import messages
 from django.contrib.auth.hashers import check_password
 from django.contrib.auth.decorators import login_required
@@ -173,3 +173,19 @@ def delete_task(request, task_id):
     year, month, day = task.date.year, task.date.month, task.date.day
     task.delete()
     return redirect(tasks, year, month, day)
+
+
+@login_required
+@decorator_check_user
+def select_tasks(request):
+    """Выборка заданий за различные периоды времени"""
+    if request.method == "POST":
+        form = SelectionForm(request.POST)
+        if form.is_valid():
+            return render(request, "user/list_tasks.html", context={
+                "tasks": Task.objects.filter(user=request.user).exclude(
+                    date__gt=form.cleaned_data["end_date"]).exclude(date__lt=form.cleaned_data["start_date"])
+            })
+        else:
+            messages.error(request, "Invalid data")
+    return render(request, "selection_form.html", context={"form": SelectionForm()})

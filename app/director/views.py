@@ -87,6 +87,6 @@ def users_data_selection(request):
                 return response
         else:
             messages.error(request, "Invalid data")
-    return render(request, "director/selection_form.html", context={
+    return render(request, "selection_form.html", context={
         "form": SelectionForm(department=request.user.department)
     })

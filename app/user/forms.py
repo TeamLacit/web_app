@@ -1,7 +1,8 @@
-from django.forms import ModelForm, Form, IntegerField, CharField
+from django.forms import ModelForm, Form, IntegerField, CharField, DateField
 from django import forms
 from user.models import Task, User
 from user.calendar import years, months
+from datetime import date
 
 
 class ChangeDataUserForm(ModelForm):
@@ -49,3 +50,20 @@ class TaskForm(ModelForm):
 
         if user:
             self.fields['project'].queryset = user.department.project.all()
+
+class SelectionForm(Form):
+    start_date = DateField(label='From', input_formats=['%d/%m/%Y'])
+    end_date = DateField(label='To', input_formats=['%d/%m/%Y'])
+
+    def is_valid(self):
+        valid = super(SelectionForm, self).is_valid()
+
+        if not valid:
+            return valid
+
+        get_start_date, get_end_date = self.cleaned_data['start_date'], self.cleaned_data['end_date']
+
+        if get_start_date >= get_end_date or get_start_date.year < years[-1] or get_end_date > date.today():
+            return False
+
+        return True
