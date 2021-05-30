@@ -3,5 +3,5 @@ from administrator import views
 
 urlpatterns = [
     path('invitation/', views.invite_user, name='invitation'),
-    path('', views.index),
+    path('', views.index, name='administrator-page'),
 ]

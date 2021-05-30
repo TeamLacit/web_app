@@ -2,11 +2,13 @@ from django.forms import Form, EmailField, PasswordInput, CharField, ValidationE
 
 
 class LoginForm(Form):
+    """Форма входа"""
     email = EmailField()
     password = CharField(widget=PasswordInput)
 
 
 class RegisterForm(Form):
+    """Форма регистрации"""
     password = CharField(label="password", widget=PasswordInput)
     password2 = CharField(label="repeat password", widget=PasswordInput)
     code = CharField(label="access code")

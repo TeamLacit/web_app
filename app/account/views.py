@@ -3,35 +3,45 @@ from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login as impl_login, logout as impl_logout
 from django.contrib import messages
 from django.core.exceptions import ObjectDoesNotExist
-
 from account.forms import LoginForm, RegisterForm
 from administrator.models import UnregisteredUser
 from user.models import User
 
 
 def login(request):
+    """Вход пользователя в систему"""
     if request.method == "POST":
         form = LoginForm(request.POST)
         if form.is_valid():
             user = authenticate(email=form.cleaned_data["email"], password=form.cleaned_data["password"])
             if user is not None:
                 impl_login(request, user)
-                return redirect("/")
+                if user.role == 3:
+                    return redirect("user-page")
+                elif user.role == 2:
+                    return redirect("director-page")
+                else:
+                    return redirect("administrator-page")
             else:
                 messages.error(request, "Invalid email or password.")
         else:
             messages.error(request, "Invalid email or password.")
-    return render(request, "account/login.html", context={"form": LoginForm()})
+    return render(request, "base_form.html", context={
+        "form": LoginForm(),
+        "title": "Log in",
+        "button_name": "Log In"
+    })
 
 
 @login_required
 def logout(request):
+    """Выход пользователя из системы"""
     impl_logout(request)
     return redirect(login)
 
 
 def registration(request):
-    """Регистрация пользователей"""
+    """Регистрация пользователя"""
     if request.method == "POST":
         form = RegisterForm(request.POST)
         if form.is_valid():
@@ -56,4 +66,8 @@ def registration(request):
             return redirect("/accounts/login")
     else:
         form = RegisterForm()
-    return render(request, "account/registration.html", context={"form": form})
+    return render(request, "base_form.html", context={
+        "form": form,
+        "title": "Registration",
+        "button_name": "Register"
+    })

@@ -3,7 +3,10 @@ from django.utils.translation import ugettext_lazy as _
 
 
 class UserManager(BaseUserManager):
+    """Пользовательский Manager"""
+
     def create_user(self, email, password, **extra_fields):
+        """Создает пользователя"""
         if not email:
             raise ValueError(_('The Email must be set'))
         email = self.normalize_email(email)
@@ -13,6 +16,7 @@ class UserManager(BaseUserManager):
         return user
 
     def create_superuser(self, email, password, **extra_fields):
+        """Создает супер-пользователя"""
         extra_fields.setdefault('is_staff', True)
         extra_fields.setdefault('is_superuser', True)
         extra_fields.setdefault('is_active', True)
