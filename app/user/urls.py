@@ -9,5 +9,5 @@ urlpatterns = [
     path('select-tasks/', views.select_tasks, name='select-tasks'),
     path('change-data/', views.change_data_user, name='change-data'),
     path('change-password/', views.change_password_user, name='change-password'),
-    path('', views.index),
+    path('', views.index, name='user-page'),
 ]

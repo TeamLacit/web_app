@@ -7,7 +7,7 @@ months = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", 
 
 
 class Day:
-    """Класс описывающий день"""
+    """Класс, описывающий день"""
     def __init__(self, num: int, is_working_day: bool = True):
         self.num, self.is_working_day = num, is_working_day
 
@@ -24,7 +24,7 @@ def get_public_holidays(year: int, month: int) -> list:
 
 
 def get_all_weeks_month(year: int, month: int) -> list:
-    """Распределяет все дни месяца по неделям"""
+    """Распределяет дни месяца по неделям"""
     days = [Day(num, False if date(year, month, num).weekday() in [5, 6] or num in get_public_holidays(year, month)
                 else True) for num in range(1, monthrange(year, month)[1] + 1)]
 

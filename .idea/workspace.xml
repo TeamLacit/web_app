@@ -1,12 +1,19 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added create_task, edit_task, delete_task">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Implemented USER_TRACK-007">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/director/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/views.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/director/selection_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/selection_form.html" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/templates/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/selection_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/selection_form.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/change_data_user.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/change_password_user.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/main/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/list_tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/tasks/list_tasks.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/task_form.html" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/user/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/tasks/index.html" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/admin.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/admin.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/calendar.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/calendar.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/forms.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/user/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/models.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/urls.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/app/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/views.py" afterDir="false" />
     </list>
@@ -51,6 +58,8 @@
     </key>
     <key name="MoveFile.RECENT_KEYS">
       <recent name="D:\Работа\Проект\app\templates" />
+      <recent name="D:\Работа\Проект\app\templates\user\tasks" />
+      <recent name="D:\Работа\Проект\app\templates\user\main" />
     </key>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
@@ -125,7 +134,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622196674520</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="Implemented USER_TRACK-007">
+      <created>1622274841169</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1622274841169</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -150,6 +166,7 @@
     <MESSAGE value="Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003" />
     <MESSAGE value="Implemented HEAD_TRACK-004" />
     <MESSAGE value="Added create_task, edit_task, delete_task" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added create_task, edit_task, delete_task" />
+    <MESSAGE value="Implemented USER_TRACK-007" />
+    <option name="LAST_COMMIT_MESSAGE" value="Implemented USER_TRACK-007" />
   </component>
 </project>

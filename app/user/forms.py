@@ -6,12 +6,14 @@ from datetime import date
 
 
 class ChangeDataUserForm(ModelForm):
+    """Форма для редактирования данных пользователя"""
     class Meta:
         model = User
         fields = ['first_name', 'last_name', 'email']
 
 
 class ChangePasswordUserForm(Form):
+    """Форма для смены пароля пользователя"""
     old_password = forms.CharField(label="old password", widget=forms.PasswordInput)
     password = forms.CharField(label="new password", widget=forms.PasswordInput)
     password2 = forms.CharField(label="repeat password", widget=forms.PasswordInput)
@@ -24,6 +26,7 @@ class ChangePasswordUserForm(Form):
 
 
 class CalendarForm(Form):
+    """Форма, проверяющая год, месяц календаря"""
     year = IntegerField(required=False)
     month = CharField(required=False)
 
@@ -40,6 +43,7 @@ class CalendarForm(Form):
 
 
 class TaskForm(ModelForm):
+    """Форма для добавления, редактирования занятия"""
     class Meta:
         model = Task
         fields = ['time_worked', 'description', 'project']
@@ -52,6 +56,7 @@ class TaskForm(ModelForm):
             self.fields['project'].queryset = user.department.project.all()
 
 class SelectionForm(Form):
+    """Форма для выбора заданий за различные периоды времени"""
     start_date = DateField(label='From', input_formats=['%d/%m/%Y'])
     end_date = DateField(label='To', input_formats=['%d/%m/%Y'])
 

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}{{ title }}{% endblock title %}
+{% block content %}
+    <form method="post" autocomplete="off">
+        {% csrf_token %}
+        {{ form.as_p }}
+        <button type="submit">{{ button_name }}</button>
+    </form>
+    <p></p>
+    <form action="{{ url_back }}">
+        <button>Back</button>
+    </form>
+    {% block optional %}{% endblock optional %}
+{% endblock content %}

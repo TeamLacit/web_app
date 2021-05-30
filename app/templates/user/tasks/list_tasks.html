@@ -1,6 +1,6 @@
 {% extends "base.html" %}
 {% load static %}
-{% block title %}The list tasks for {{ date }}{% endblock title %}
+{% block title %}The list tasks{% endblock title %}
 {% block head %}
     <link rel="stylesheet" href="{% static 'css/user/tasks/base.css' %}" type="text/css"/>
     <link rel="stylesheet" href="{% static 'css/user/tasks/placing_buttons_together.css' %}" type="text/css"/>
@@ -14,8 +14,10 @@
                     <p>Date: {{ task.date }}</p>
                     <p>Description: {{ task.description }}</p>
                     <p>Worked time: {{ task.time_worked }}</p>
+                    {% block optional_task %}{% endblock optional_task %}
                 </a>
             </li>
         {% endfor %}
+        {% block last_element %}{% endblock last_element %}
     </ul>
 {% endblock content %}

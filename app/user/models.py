@@ -4,6 +4,7 @@ from account.models import UserManager
 
 
 class Company(models.Model):
+    """Модель, описывающая таблицу Company"""
     name = models.CharField(max_length=200)
 
     def __str__(self):
@@ -11,6 +12,7 @@ class Company(models.Model):
 
 
 class Project(models.Model):
+    """Модель, описывающая таблицу Project"""
     name = models.CharField(max_length=200)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT)
 
@@ -19,6 +21,7 @@ class Project(models.Model):
 
 
 class Department(models.Model):
+    """Модель, описывающая таблицу Department"""
     name = models.CharField(max_length=200)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT)
     project = models.ManyToManyField(Project)
@@ -28,6 +31,7 @@ class Department(models.Model):
 
 
 class User(AbstractUser):
+    """Модель, описывающая таблицу User"""
     username = None
     email = models.EmailField(unique=True)
     role = models.SmallIntegerField(default=1)
@@ -45,6 +49,7 @@ class User(AbstractUser):
 
 
 class Task(models.Model):
+    """Модель, описывающая таблицу Task"""
     date = models.DateField()
     time_worked = models.PositiveBigIntegerField()
     project = models.ForeignKey(Project, on_delete=models.RESTRICT)

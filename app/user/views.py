@@ -7,6 +7,7 @@ from django.contrib.auth.decorators import login_required
 from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 from user.models import Task
+from django.urls import reverse_lazy
 
 
 def decorator_check_user(func):
@@ -33,7 +34,7 @@ def decorator_check_date(func):
 
 
 def decorator_handles_task_DoesNotExist(func):
-    """Декоратор обрабатывайщий исключение Task.DoesNotExist"""
+    """Декоратор, обрабатывайщий исключение Task.DoesNotExist"""
     def wrapped(request, **kwargs):
         try:
             return func(request, **kwargs)
@@ -59,7 +60,7 @@ def index(request):
 
     weeks = get_all_weeks_month(year, month)
 
-    return render(request, "user/index.html", context={
+    return render(request, "user/main/index.html", context={
         "years": years,
         "current_year": year,
         "current_month": month,
@@ -68,13 +69,14 @@ def index(request):
         "today": today,
     })
 
+
 @login_required
 @decorator_check_user
 @decorator_check_date
 def tasks(request, year, month, day):
     """Список заданий на определенный день"""
     get_date = date(year, month, day)
-    return render(request, "user/tasks.html", context={
+    return render(request, "user/tasks/index.html", context={
         "date": get_date,
         "tasks": Task.objects.filter(user__id=request.user.id, date=get_date),
     })
@@ -90,19 +92,29 @@ def change_password_user(request):
             old_password = form.cleaned_data['old_password']
             if not check_password(old_password, request.user.password):
                 messages.error(request, "wrong old password!")
-                return render(request, "user/change_password_user.html", context={"form": form})
+                return render(request, "form.html", context={
+                    "form": form,
+                    "title": "Change password",
+                    "url_back": reverse_lazy('user-page'),
+                    "button_name": "Edit"
+                })
             request.user.set_password(form.cleaned_data["password"])
             request.user.save()
             return redirect("/accounts/login")
     else:
         form = ChangePasswordUserForm()
-    return render(request, "user/change_password_user.html", context={"form": form})
+    return render(request, "form.html", context={
+        "form": form,
+        "title": "Change password",
+        "url_back": reverse_lazy('user-page'),
+        "button_name": "Edit"
+    })
 
 
 @login_required
 @decorator_check_user
 def change_data_user(request):
-    """Редактирование данных пользователем"""
+    """Редактирование данных пользователя"""
     if request.method == "POST":
         form = ChangeDataUserForm(request.POST)
         if form.is_valid():
@@ -114,14 +126,19 @@ def change_data_user(request):
         else:
             messages.error(request, "Invalid data")
     form = ChangeDataUserForm(instance=request.user)
-    return render(request, "user/change_data_user.html", context={"form": form})
+    return render(request, "form.html", context={
+        "form": form,
+        "title": "Change data",
+        "url_back": reverse_lazy('user-page'),
+        "button_name": "Edit"
+    })
 
 
 @login_required
 @decorator_check_user
 @decorator_check_date
 def create_task(request, year, month, day):
-    """Добавления задания"""
+    """Добавление задания"""
     if request.method == "POST":
         form = TaskForm(request.POST, user=request.user)
         if form.is_valid():
@@ -135,8 +152,10 @@ def create_task(request, year, month, day):
             return redirect(tasks, year, month, day)
         else:
             messages.error(request, "Invalid data")
-    return render(request, "user/task_form.html", context={
+    return render(request, "form.html", context={
         "form": TaskForm(user=request.user),
+        "title": "Create task",
+        "url_back": reverse_lazy('list-tasks', args=[year, month, day]),
         "button_name": "Create",
     })
 
@@ -158,8 +177,11 @@ def edit_task(request, task_id):
             return redirect(tasks, task.date.year, task.date.month, task.date.day)
         else:
             messages.error(request, "Invalid data")
-    return render(request, "user/task_form.html", context={
+    task = Task.objects.get(id=task_id)
+    return render(request, "form.html", context={
         "form": TaskForm(user=request.user, instance=Task.objects.get(id=task_id, user=request.user)),
+        "title": "Edit task",
+        "url_back": reverse_lazy('list-tasks', args=[task.date.year, task.date.month, task.date.day]),
         "button_name": "Edit",
     })
 
@@ -182,10 +204,15 @@ def select_tasks(request):
     if request.method == "POST":
         form = SelectionForm(request.POST)
         if form.is_valid():
-            return render(request, "user/list_tasks.html", context={
+            return render(request, "user/tasks/list_tasks.html", context={
                 "tasks": Task.objects.filter(user=request.user).exclude(
                     date__gt=form.cleaned_data["end_date"]).exclude(date__lt=form.cleaned_data["start_date"])
             })
         else:
             messages.error(request, "Invalid data")
-    return render(request, "selection_form.html", context={"form": SelectionForm()})
+    return render(request, "selection_form.html", context={
+        "form": SelectionForm(),
+        "title": "Selection form",
+        "url_back": reverse_lazy('user-page'),
+        "button_name": "Execute",
+    })
