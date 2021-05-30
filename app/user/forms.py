@@ -56,7 +56,7 @@ class TaskForm(ModelForm):
             self.fields['project'].queryset = user.department.project.all()
 
 class SelectionForm(Form):
-    """Форма для выбора заданий за различные периоды времени"""
+    """Форма для выборки заданий за различные периоды времени"""
     start_date = DateField(label='From', input_formats=['%d/%m/%Y'])
     end_date = DateField(label='To', input_formats=['%d/%m/%Y'])
 

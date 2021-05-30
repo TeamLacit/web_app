@@ -8,13 +8,7 @@
 {% block content %}
     <div id="content">
       <div id="left">
-        <p align="center"><img src="{% static 'images/avatar.png' %}" width = "50" height = "50" alt="Avatar"></p>
-        <p>First name: {{ user.first_name }}</p>
-        <p>Last name: {{ user.last_name }}</p>
-        <p>Email: {{ user.email }}</p>
-        <p>Company: {{ user.department.company.name }}</p>
-        <p>Department: {{ user.department.name }}</p>
-        <p>Post: Director</p>
+        {% include 'user/main/user_information.html' %}
       </div>
       <div id="center">
         <p>Список пользователей отдела</p>
