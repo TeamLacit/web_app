@@ -3,10 +3,10 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-
 from user.models import User
 from administrator.models import UnregisteredUser
 from administrator.forms import InvitationForm
+from main.views import decorator_adds_user_information_log
 
 
 def decorator_check_admin(func):
@@ -20,6 +20,7 @@ def decorator_check_admin(func):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_admin
 def index(request):
     """Главная страница админа"""
@@ -28,6 +29,7 @@ def index(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_admin
 def invite_user(request):
     """Приглашение пользователя на регистрацию"""

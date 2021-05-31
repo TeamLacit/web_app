@@ -8,6 +8,7 @@ from datetime import date
 from user.calendar import get_all_weeks_month, years, months
 from user.models import Task
 from django.urls import reverse_lazy
+from main.views import decorator_adds_user_information_log
 
 
 def decorator_check_user(func):
@@ -44,6 +45,7 @@ def decorator_handles_task_DoesNotExist(func):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 def index(request):
     """Главная страница пользователя"""
@@ -71,6 +73,7 @@ def index(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 @decorator_check_date
 def tasks(request, year, month, day):
@@ -83,6 +86,7 @@ def tasks(request, year, month, day):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 def change_password_user(request):
     """Смена пароля пользователя"""
@@ -112,6 +116,7 @@ def change_password_user(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 def change_data_user(request):
     """Редактирование данных пользователя"""
@@ -135,6 +140,7 @@ def change_data_user(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 @decorator_check_date
 def create_task(request, year, month, day):
@@ -161,6 +167,7 @@ def create_task(request, year, month, day):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 @decorator_handles_task_DoesNotExist
 def edit_task(request, task_id):
@@ -187,6 +194,7 @@ def edit_task(request, task_id):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 @decorator_handles_task_DoesNotExist
 def delete_task(request, task_id):
@@ -198,6 +206,7 @@ def delete_task(request, task_id):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_user
 def select_tasks(request):
     """Выборка заданий за различные периоды времени"""

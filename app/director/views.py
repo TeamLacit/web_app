@@ -6,6 +6,7 @@ from django.contrib import messages
 from django.http import HttpResponse, Http404
 from director.supporting import write_csv_file, write_xlsx_file
 from django.urls import reverse_lazy
+from main.views import decorator_adds_user_information_log
 
 
 def decorator_check_director(func):
@@ -19,6 +20,7 @@ def decorator_check_director(func):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_director
 def index(request):
     """Главная страница руководителя"""
@@ -28,6 +30,7 @@ def index(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_director
 def user_data(request, user_id):
     """Просмотр данных каждого из пользователей отдела"""
@@ -43,6 +46,7 @@ def user_data(request, user_id):
 
 
 @login_required
+@decorator_adds_user_information_log
 @decorator_check_director
 def users_data_selection(request):
     """Выборка данных пользователей"""

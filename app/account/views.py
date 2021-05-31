@@ -6,6 +6,7 @@ from django.core.exceptions import ObjectDoesNotExist
 from account.forms import LoginForm, RegisterForm
 from administrator.models import UnregisteredUser
 from user.models import User
+from main.views import decorator_adds_user_information_log
 
 
 def login(request):
@@ -34,6 +35,7 @@ def login(request):
 
 
 @login_required
+@decorator_adds_user_information_log
 def logout(request):
     """Выход пользователя из системы"""
     impl_logout(request)
