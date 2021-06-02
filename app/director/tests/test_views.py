@@ -62,10 +62,10 @@ class ViewsTestCase(TestCase):
     def test_2_post_request_users_data_selection_view(self):
         self.client.force_login(self.test_user2)
         resp = self.client.post(reverse("users-data-selection"), data={
-            'start_date': ['31/05/2021'],
-            'end_date': ['01/06/2021'],
-            'users': [f'{self.test_user1.id}'],
-            'uploading_data': ['1']
+            "start_date": ["31/05/2021"],
+            "end_date": ["01/06/2021"],
+            "users": [f"{self.test_user1.id}"],
+            "uploading_data": ["1"]
         })
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'director/users_data_selection.html')
@@ -73,10 +73,10 @@ class ViewsTestCase(TestCase):
     def test_3_post_request_users_data_selection_view(self):
         self.client.force_login(self.test_user2)
         resp = self.client.post(reverse("users-data-selection"), data={
-            'start_date': ['31/05/2021'],
-            'end_date': ['01/06/2021'],
-            'users': [f'{self.test_user1.id}'],
-            'uploading_data': ['2']
+            "start_date": ["31/05/2021"],
+            "end_date": ["01/06/2021"],
+            "users": [f"{self.test_user1.id}"],
+            "uploading_data": ["2"]
         })
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp["Content-Type"], "text/csv")
@@ -84,10 +84,10 @@ class ViewsTestCase(TestCase):
     def test_4_post_request_users_data_selection_view(self):
         self.client.force_login(self.test_user2)
         resp = self.client.post(reverse("users-data-selection"), data={
-            'start_date': ['31/05/2021'],
-            'end_date': ['01/06/2021'],
-            'users': [f'{self.test_user1.id}'],
-            'uploading_data': ['3']
+            "start_date": ["31/05/2021"],
+            "end_date": ["01/06/2021"],
+            "users": [f"{self.test_user1.id}"],
+            "uploading_data": ["3"]
         })
         self.assertEqual(resp.status_code, 200)
         self.assertEqual(resp["Content-Type"], "application/vnd.ms-excel")

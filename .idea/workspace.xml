@@ -1,11 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added tests director app">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Fixed tests director app">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/director/tests/test_forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/tests/test_forms.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/director/tests/test_supporting.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/tests/test_supporting.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/user/tests.py" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/director/tests/test_views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/tests/test_views.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -201,7 +199,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622554005885</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Fixed tests director app">
+      <created>1622614792008</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1622614792008</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -232,6 +237,7 @@
     <MESSAGE value="Optimization account app" />
     <MESSAGE value="Added logging" />
     <MESSAGE value="Added tests director app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added tests director app" />
+    <MESSAGE value="Fixed tests director app" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed tests director app" />
   </component>
 </project>
