@@ -53,7 +53,11 @@ def registration(request):
                 unreg_user = UnregisteredUser.objects.get(code=code)
             except ObjectDoesNotExist:
                 messages.error(request, "invalid access key")
-                return render(request, "account/registration.html", context={"form": form})
+                return render(request, "base_form.html", context={
+                    "form": form,
+                    "title": "Registration",
+                    "button_name": "Register"
+                })
 
             user = User()
             user.first_name = unreg_user.first_name

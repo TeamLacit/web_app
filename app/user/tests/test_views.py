@@ -36,7 +36,7 @@ class ViewsTestCase(TestCase):
         self.client.force_login(self.test_user1)
         resp = self.client.get(reverse("user-page"))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'user/main/index.html')
+        self.assertTemplateUsed(resp, "user/main/index.html")
 
     def test_check_context_template_index_view(self):
         self.client.force_login(self.test_user1)
@@ -50,7 +50,7 @@ class ViewsTestCase(TestCase):
         self.client.force_login(self.test_user1)
         resp = self.client.get(reverse("list-tasks", args=[2021, 5, 20]))
         self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'user/tasks/index.html')
+        self.assertTemplateUsed(resp, "user/tasks/index.html")
 
     def test_2_check_access_tasks_view(self):
         self.client.force_login(self.test_user1)

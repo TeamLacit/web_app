@@ -20,4 +20,7 @@
         {% endfor %}
         {% block last_element %}{% endblock last_element %}
     </ul>
+    <form action="{% url 'user-page' %}">
+        <button style="font-size: 15px;">Back</button>
+    </form>
 {% endblock content %}
