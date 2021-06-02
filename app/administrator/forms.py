@@ -1,6 +1,7 @@
 from django import forms
 
 from administrator.models import UnregisteredUser
+from user.models import User
 
 
 class InvitationForm(forms.ModelForm):
@@ -9,3 +10,9 @@ class InvitationForm(forms.ModelForm):
     class Meta:
         model = UnregisteredUser
         fields = ['first_name', 'last_name', 'email', 'department', 'post']
+
+
+class ChangeUserForm(forms.ModelForm):
+    class Meta:
+        model = User
+        fields = ['department', 'is_active']

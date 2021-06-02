@@ -5,7 +5,7 @@ from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
 from user.models import User
 from administrator.models import UnregisteredUser
-from administrator.forms import InvitationForm
+from administrator.forms import InvitationForm, ChangeUserForm
 from main.views import decorator_adds_user_information_log
 
 
@@ -26,6 +26,36 @@ def index(request):
     """Главная страница админа"""
     users = User.objects.all()
     return render(request, "administrator/index.html", context={'users': users})
+
+
+@login_required
+@decorator_adds_user_information_log
+@decorator_check_admin
+def change_user(request, id):
+    """Изменение отдела, блокировка или удаление пользователей"""
+    user = User.objects.get(id=id)
+
+    if request.method == "POST":
+        form = InvitationForm(request.POST)
+        if form.is_valid():
+            user.department = form.cleaned_data["department"]
+            user.is_active = form.cleaned_data["is_active"]
+            user.save()
+            return redirect("/administrator/")
+    else:
+        form = ChangeUserForm(instance=user)
+    return render(request, f"administrator/change-user.html", context={"form": form, "id": id})
+
+
+@login_required
+@decorator_adds_user_information_log
+@decorator_check_admin
+def delete_user(request, id):
+    """удаление пользователя"""
+    user = User.objects.get(id)
+    if user:
+        user.delete()
+    return redirect('/administrator/')
 
 
 @login_required

@@ -3,3 +3,4 @@ __pycache__
 venv
 migrations
 *.sqlite3
+*.log
