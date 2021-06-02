@@ -98,25 +98,14 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'form.html')
 
-    def test_1_post_request_change_data_user_view(self):
+    def test_post_request_change_data_user_view(self):
         self.client.force_login(self.test_user1)
         resp = self.client.post(reverse("change-data"), data={
-            "email": "vsh@mail.ru",
             "last_name": "vsh",
             "first_name": "vsh"
         })
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp.url, reverse("user-page"))
-
-    def test_2_post_request_change_data_user_view(self):
-        self.client.force_login(self.test_user1)
-        resp = self.client.post(reverse("change-data"), data={
-            "email": "abc@mail.ru",
-            "last_name": "vsh",
-            "first_name": "vsh"
-        })
-        self.assertEqual(resp.status_code, 200)
-        self.assertTemplateUsed(resp, 'form.html')
+        self.assertEqual(resp.url, reverse("home"))
 
     def test_1_check_access_create_task_view(self):
         self.client.force_login(self.test_user1)
@@ -252,17 +241,15 @@ class ViewsTestCase(TestCase):
         self.assertEqual(resp.status_code, 302)
         self.assertEqual(resp.url, "/accounts/login")
 
-    def test_checks_access_with_different_role_change_password_user_view(self):
-        self.client.force_login(self.test_user2)
+    def test_checks_access_unauthorized_user_change_password_user_view(self):
         resp = self.client.get(reverse("change-password"))
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp.url, "/accounts/login")
+        self.assertEqual(resp.url, "/accounts/login/?next=/user/change-password/")
 
-    def test_checks_access_with_different_role_change_data_user_view(self):
-        self.client.force_login(self.test_user2)
+    def test_checks_access_unauthorized_user_change_data_user_view(self):
         resp = self.client.get(reverse("change-data"))
         self.assertEqual(resp.status_code, 302)
-        self.assertEqual(resp.url, "/accounts/login")
+        self.assertEqual(resp.url, "/accounts/login/?next=/user/change-data/")
 
     def test_checks_access_with_different_role_create_task_view(self):
         self.client.force_login(self.test_user2)

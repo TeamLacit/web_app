@@ -9,6 +9,13 @@
     <div id="content">
       <div id="left">
         {% include 'user/main/user_information.html' %}
+        <form action="{% url 'change-data' %}">
+            <button>Edit your own data</button>
+        </form>
+        <p></p>
+        <form action="{% url 'change-password' %}">
+            <button>Change password</button>
+        </form>
       </div>
       <div id="center">
         <p>Список пользователей отдела</p>

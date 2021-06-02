@@ -9,7 +9,7 @@ class ChangeDataUserForm(ModelForm):
     """Форма для редактирования данных пользователя"""
     class Meta:
         model = User
-        fields = ['first_name', 'last_name', 'email']
+        fields = ['first_name', 'last_name']
 
 
 class ChangePasswordUserForm(Form):

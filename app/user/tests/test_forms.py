@@ -17,18 +17,10 @@ class ChangeDataUserFormTestCase(TestCase):
     def tearDownClass(cls):
         cls.test_user.delete()
 
-    def test_1_checking_validity_change_data_user_form(self):
-        self.assertFalse(ChangeDataUserForm(data={
-            "first_name": "abc",
-            "last_name": "abc",
-            "email": "abc@mail.ru"
-        }).is_valid())
-
-    def test_2_checking_validity_change_data_user_form(self):
+    def test_checking_validity_change_data_user_form(self):
         self.assertTrue(ChangeDataUserForm(data={
             "first_name": "abc",
             "last_name": "abc",
-            "email": "def@mail.ru"
         }).is_valid())
 
 

@@ -87,7 +87,6 @@ def tasks(request, year, month, day):
 
 @login_required
 @decorator_adds_user_information_log
-@decorator_check_user
 def change_password_user(request):
     """Смена пароля пользователя"""
     if request.method == "POST":
@@ -110,31 +109,29 @@ def change_password_user(request):
     return render(request, "form.html", context={
         "form": form,
         "title": "Change password",
-        "url_back": reverse_lazy('user-page'),
+        "url_back": reverse_lazy("home"),
         "button_name": "Edit"
     })
 
 
 @login_required
 @decorator_adds_user_information_log
-@decorator_check_user
 def change_data_user(request):
     """Редактирование данных пользователя"""
     if request.method == "POST":
         form = ChangeDataUserForm(request.POST)
         if form.is_valid():
-            request.user.email = form.cleaned_data["email"]
             request.user.last_name = form.cleaned_data["last_name"]
             request.user.first_name = form.cleaned_data["first_name"]
             request.user.save()
-            return redirect(index)
+            return redirect("/")
         else:
             messages.error(request, "Invalid data")
     form = ChangeDataUserForm(instance=request.user)
     return render(request, "form.html", context={
         "form": form,
         "title": "Change data",
-        "url_back": reverse_lazy('user-page'),
+        "url_back": reverse_lazy('home'),
         "button_name": "Edit"
     })
 
