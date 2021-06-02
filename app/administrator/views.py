@@ -3,7 +3,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
-from user.models import User
+from user.models import User, Company, Project, Department
 from administrator.models import UnregisteredUser
 from administrator.forms import InvitationForm, ChangeUserForm
 from main.views import decorator_adds_user_information_log
@@ -52,7 +52,7 @@ def change_user(request, id):
 @decorator_check_admin
 def delete_user(request, id):
     """удаление пользователя"""
-    user = User.objects.get(id)
+    user = User.objects.get(id=id)
     if user:
         user.delete()
     return redirect('/administrator/')
@@ -94,3 +94,9 @@ def invite_user(request):
     else:
         form = InvitationForm()
     return render(request, "administrator/invitation.html", context={"form": form})
+
+
+def company_list(request):
+    """Просмотр списка компаний"""
+    companies = Company.objects.all()
+    return render(request, "administrator/company/index.html", context={"companies": companies})

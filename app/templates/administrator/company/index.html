@@ -1,0 +1,23 @@
+{% extends "base.html" %}
+{% load static %}
+{% block title %}Companies{% endblock title %}
+{% block head %}
+    <link rel="stylesheet" type="text/css" href="{% static "/css/administrator/base.css" %}">
+{% endblock head %}
+{% block content %}
+<div class="page">
+  <div class="work">
+    <h3>Companies</h3>
+      <table>
+          <tr>
+              <th>Company name</th>
+          </tr>
+          {% for company in companies %}
+          <tr>
+              <td><a href="company-list/{{ company.id }}/">{{ company.name }}</a></td>
+          </tr>
+          {% endfor %}
+      </table>
+  </div>
+</div>
+{% endblock content %}
