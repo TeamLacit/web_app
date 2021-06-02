@@ -8,13 +8,15 @@
 <div class="page">
   <div class="work">
     <h3>Companies</h3>
+        <button type="button" onclick="window.location.href = '{% url 'add-company' %}'">add company</button>
       <table>
           <tr>
               <th>Company name</th>
           </tr>
           {% for company in companies %}
           <tr>
-              <td><a href="company-list/{{ company.id }}/">{{ company.name }}</a></td>
+              <td><a href="/administrator/company/{{ company.id }}/">{{ company.name }}</a></td>
+              <td><button type="button" onclick="window.location.href = '/administrator/delete-company/{{ company.id }}/'">delete</button> </td>
           </tr>
           {% endfor %}
       </table>
