@@ -5,7 +5,7 @@ from user.models import User, Company
 
 
 class InvitationForm(forms.ModelForm):
-    role = forms.ChoiceField(choices=((2, 'director'), (3, 'user')))
+    role = forms.ChoiceField(choices=((1, 'admin'), (2, 'director'), (3, 'user')))
 
     class Meta:
         model = UnregisteredUser
