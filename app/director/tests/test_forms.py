@@ -25,7 +25,7 @@ class FormsTestCase(TestCase):
 
     @classmethod
     def tearDownClass(cls):
-        for elem in [cls.test_user1, cls.test_user2, cls.department, cls.company]:
+        for elem in [cls.test_user1, cls.test_user2, cls.test_user3, cls.department, cls.company]:
             elem.delete()
 
     def test_create_selection_form(self):
