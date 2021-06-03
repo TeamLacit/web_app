@@ -16,9 +16,3 @@ class ChangeUserForm(forms.ModelForm):
     class Meta:
         model = User
         fields = ['department', 'is_active']
-
-
-class CompanyForm(forms.ModelForm):
-    class Meta:
-        model = Company
-        fields = ['name']

@@ -23,5 +23,6 @@ urlpatterns = [
     path('user/', include('user.urls')),
     path('administrator/', include('administrator.urls')),
     path('director/', include('director.urls')),
+    path('company/', include('company.urls')),
     path('', views.index, name='home'),
 ]

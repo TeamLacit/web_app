@@ -7,16 +7,17 @@
 {% block content %}
 <div class="page">
   <div class="work">
+  <button type="button" class="home-btn" onclick="window.location.href = '{% url 'administrator-page' %}'">Home</button>
     <h3>Companies</h3>
-        <button type="button" onclick="window.location.href = '{% url 'add-company' %}'">add company</button>
+        <button type="button" class="add-btn" onclick="window.location.href = '{% url 'add-company' %}'">add company</button>
       <table>
           <tr>
               <th>Company name</th>
           </tr>
           {% for company in companies %}
           <tr>
-              <td><a href="/administrator/company/{{ company.id }}/">{{ company.name }}</a></td>
-              <td><button type="button" onclick="window.location.href = '/administrator/delete-company/{{ company.id }}/'">delete</button> </td>
+              <td><a href="/company/edit/{{ company.id }}/">{{ company.name }}</a></td>
+              <td><button type="button" onclick="window.location.href = '/company/delete/{{ company.id }}/'">delete</button> </td>
           </tr>
           {% endfor %}
       </table>
