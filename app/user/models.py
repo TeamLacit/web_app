@@ -24,7 +24,7 @@ class Department(models.Model):
     """Модель, описывающая таблицу Department"""
     name = models.CharField(max_length=200)
     company = models.ForeignKey(Company, on_delete=models.RESTRICT)
-    project = models.ManyToManyField(Project)
+    project = models.ManyToManyField(Project, blank=True)
 
     def __str__(self):
         return self.name

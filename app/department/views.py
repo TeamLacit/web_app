@@ -36,6 +36,9 @@ def edit_department(request, company_id, id=None):
                 department = Department()
             department.name = form.cleaned_data['name']
             department.company = Company.objects.get(id=company_id)
+            projects = form.cleaned_data['project']
+            for project in projects:
+                department.project.add(project)
             department.save()
             return redirect(f'/department/list/{company_id}/')
         else:
