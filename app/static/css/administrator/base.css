@@ -14,8 +14,12 @@
     border: none;
     width: 80%;
     height: 80%;
-
 }
+
+  button.dep-btn {
+    width: 100%;
+  }
+
   button.home-btn {
     width: 10%;
     height: 10%;

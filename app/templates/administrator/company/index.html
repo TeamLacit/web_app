@@ -18,6 +18,7 @@
           <tr>
               <td><a href="/company/edit/{{ company.id }}/">{{ company.name }}</a></td>
               <td><button type="button" onclick="window.location.href = '/company/delete/{{ company.id }}/'">delete</button> </td>
+              <td><button type="button" class="dep-btn" onclick="window.location.href = '/department/list/{{ company.id }}/'">departments</button> </td>
           </tr>
           {% endfor %}
       </table>

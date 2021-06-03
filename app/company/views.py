@@ -6,7 +6,7 @@ from django.contrib import messages
 from user.models import Company, Project, Department
 from main.views import decorator_adds_user_information_log
 from administrator.views import decorator_check_admin
-from .forms import CompanyForm
+from company.forms import CompanyForm
 
 
 @login_required
@@ -60,4 +60,3 @@ def delete_company(request, id):
         except RestrictedError:
             messages.error(request, f"Can't delete company {company.name}")
     return redirect('/company/list/')
-
