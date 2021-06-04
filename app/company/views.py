@@ -3,7 +3,7 @@ from django.db.models import RestrictedError
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from user.models import Company, Project, Department
+from user.models import Company
 from main.views import decorator_adds_user_information_log
 from administrator.views import decorator_check_admin
 from company.forms import CompanyForm

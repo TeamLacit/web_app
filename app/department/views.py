@@ -3,7 +3,7 @@ from django.db.models import RestrictedError
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
 
-from user.models import Company, Project, Department
+from user.models import Company, Department
 from main.views import decorator_adds_user_information_log
 from administrator.views import decorator_check_admin
 from department.forms import DepartmentForm
@@ -14,9 +14,9 @@ from department.forms import DepartmentForm
 @decorator_check_admin
 def department_list(request, company_id):
     """Просмотр списка отделов компании"""
-    companies = Department.objects.filter(company_id=company_id)
+    departments = Department.objects.filter(company_id=company_id)
     company = Company.objects.get(id=company_id)
-    return render(request, "administrator/department/index.html", context={"departments": companies, "company": company})
+    return render(request, "administrator/department/index.html", context={"departments": departments, "company": company})
 
 
 @login_required
