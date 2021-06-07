@@ -3,6 +3,7 @@ from django.contrib import messages
 from django.conf import settings
 from django.core.mail import send_mail
 from django.contrib.auth.decorators import login_required
+from django.http import Http404
 from user.models import User
 from administrator.models import UnregisteredUser
 from administrator.forms import InvitationForm, ChangeUserForm
@@ -33,10 +34,12 @@ def index(request):
 @decorator_check_admin
 def change_user(request, id):
     """Изменение отдела, блокировка или удаление пользователей"""
-    user = User.objects.get(id=id)
-
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404()
     if request.method == "POST":
-        form = InvitationForm(request.POST)
+        form = ChangeUserForm(request.POST)
         if form.is_valid():
             user.department = form.cleaned_data["department"]
             user.is_active = form.cleaned_data["is_active"]
@@ -52,7 +55,10 @@ def change_user(request, id):
 @decorator_check_admin
 def delete_user(request, id):
     """удаление пользователя"""
-    user = User.objects.get(id=id)
+    try:
+        user = User.objects.get(id=id)
+    except User.DoesNotExist:
+        raise Http404
     if user:
         user.delete()
     return redirect('/administrator/')
