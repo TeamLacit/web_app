@@ -64,7 +64,7 @@ class AdminIndexViewTest(TestCase):
         self.assertEqual(resp.status_code, 200)
         self.assertTemplateUsed(resp, 'administrator/index.html')
 
-    def test_list_all_authors(self):
+    def test_list_all_users(self):
         self.client.force_login(self.admin)
         resp = self.client.get(reverse('administrator-page'))
         self.assertEqual(str(resp.context['user']), 'admin admin')

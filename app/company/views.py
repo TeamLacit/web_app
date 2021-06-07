@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.db.models import RestrictedError
 from django.contrib.auth.decorators import login_required
 from django.contrib import messages
+from django.http import Http404
 
 from user.models import Company
 from main.views import decorator_adds_user_information_log
@@ -24,7 +25,10 @@ def company_list(request):
 def edit_company(request, id=None):
     """Добавление и изменение компании"""
     if id:
-        company = Company.objects.get(id=id)
+        try:
+            company = Company.objects.get(id=id)
+        except Company.DoesNotExist:
+            raise Http404()
     else:
         company = None
 
@@ -53,7 +57,10 @@ def edit_company(request, id=None):
 @decorator_check_admin
 def delete_company(request, id):
     """удаление компании"""
-    company = Company.objects.get(id=id)
+    try:
+        company = Company.objects.get(id=id)
+    except Company.DoesNotExist:
+        raise Http404()
     if company:
         try:
             company.delete()
