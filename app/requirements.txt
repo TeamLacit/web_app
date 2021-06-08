@@ -1,4 +1,5 @@
 asgiref==3.3.4
+psycopg2==2.8.6
 colorama==0.4.4
 commonmark==0.9.1
 convertdate==2.3.2
