@@ -10,9 +10,16 @@
         <div class="header">
               <h1>Welcome </h1>
               <img src="{% static "/images/avatar.png" %}" alt="Avatar" class="avatar">
-              <p>Name: {{ user.name}} </p>
-              <p>Position: {{position.name}} </p>
-              <p>Email: {{email}} </p>
+              <p>First name: {{ user.first_name }}</p>
+              <p>Last name: {{ user.last_name }}</p>
+              <p>Email: {{ user.email }}</p>
+              <form action="{% url 'change-data' %}">
+                <button>Edit your own data</button>
+              </form>
+              <p></p>
+              <form action="{% url 'change-password' %}">
+                <button>Change password</button>
+              </form>
         </div>
     </div>
     <div class="exer">

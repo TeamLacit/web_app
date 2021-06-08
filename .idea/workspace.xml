@@ -1,10 +1,11 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added the ability to edit your password and your data in the director app">
+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added docker">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/app/settings.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/app/settings.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/app/requirements.txt" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/administrator/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/administrator/views.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/requirements.txt" beforeDir="false" afterPath="$PROJECT_DIR$/app/requirements.txt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/app/templates/administrator/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/administrator/index.html" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -249,7 +250,14 @@
       <option name="project" value="LOCAL" />
       <updated>1622659110869</updated>
     </task>
-    <option name="localTasksCounter" value="24" />
+    <task id="LOCAL-00024" summary="Added docker">
+      <created>1623146210367</created>
+      <option name="number" value="00024" />
+      <option name="presentableId" value="LOCAL-00024" />
+      <option name="project" value="LOCAL" />
+      <updated>1623146210367</updated>
+    </task>
+    <option name="localTasksCounter" value="25" />
     <servers />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -286,6 +294,7 @@
     <MESSAGE value="Added tests account app" />
     <MESSAGE value="Added tests main app" />
     <MESSAGE value="Added the ability to edit your password and your data in the director app" />
-    <option name="LAST_COMMIT_MESSAGE" value="Added the ability to edit your password and your data in the director app" />
+    <MESSAGE value="Added docker" />
+    <option name="LAST_COMMIT_MESSAGE" value="Added docker" />
   </component>
 </project>

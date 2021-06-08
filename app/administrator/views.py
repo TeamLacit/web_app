@@ -25,7 +25,7 @@ def decorator_check_admin(func):
 @decorator_check_admin
 def index(request):
     """Главная страница админа"""
-    users = User.objects.all()
+    users = User.objects.exclude(role=1)
     return render(request, "administrator/index.html", context={'users': users})
 
 
