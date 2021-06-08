@@ -27,7 +27,7 @@ SECRET_KEY = 'django-insecure-iq5zs(bn2g2w-zt^n5c%ve02gx*ha3!4nk#7vvz9^+e=k^5*!n
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
+ALLOWED_HOSTS=["localhost", "127.0.0.1"]
 
 # Application definition
 
@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'psycopg2',
     'crispy_forms',
     'main',
     'account',
@@ -87,8 +88,12 @@ login_url = '/accounts/login/'
 
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'NAME': 'prod_db',
+        'USER': 'admin',
+        'PASSWORD': 'admin',
+        'HOST': 'postgresdb',
+        'PORT': 5432
     }
 }
 AUTH_USER_MODEL = "user.User"
@@ -190,11 +195,11 @@ LOGGING = {
             'propagate': True,
             'level': 'DEBUG',
         },
-        'django.db.backends': {
-            'handlers': ['console', 'file'],
-            'propagate': True,
-            'level': 'DEBUG',
-        },
+#        'django.db.backends': {
+#            'handlers': ['console', 'file'],
+#            'propagate': True,
+#            'level': 'DEBUG',
+#        },
         'django.security': {
             'handlers': ['console', 'file'],
             'propagate': True,

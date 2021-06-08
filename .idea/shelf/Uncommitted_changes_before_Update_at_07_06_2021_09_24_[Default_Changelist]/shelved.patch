@@ -1,0 +1,313 @@
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch b/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch	(revision 84fbbd66b2302e075b0f2047590c4b9bd6ffb1e8)
++++ /dev/null	(revision 84fbbd66b2302e075b0f2047590c4b9bd6ffb1e8)
+@@ -1,245 +0,0 @@
+-Index: app/templates/director/selection_form.html
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/templates/director/selection_form.html b/app/templates/selection_form.html
+-rename from app/templates/director/selection_form.html
+-rename to app/templates/selection_form.html
+---- a/app/templates/director/selection_form.html	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/templates/selection_form.html	(date 1622197877063)
+-@@ -1,5 +1,5 @@
+- {% extends "base.html" %}
+--{% block title %}Selection form{{ get_user.last_name }}{% endblock title %}
+-+{% block title %}Selection form{% endblock title %}
+- {% block head %}
+-   <style>body {font-family: Arial, sans-serif;}</style>
+-   <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+-Index: app/user/views.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>from django.http import Http404\r\nfrom django.shortcuts import render, redirect\r\nfrom user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm\r\nfrom django.contrib import messages\r\nfrom django.contrib.auth.hashers import check_password\r\nfrom django.contrib.auth.decorators import login_required\r\nfrom datetime import date\r\nfrom user.calendar import get_all_weeks_month, years, months\r\nfrom user.models import Task\r\n\r\n\r\ndef decorator_check_user(func):\r\n    \"\"\"\"Декоратор для проверки роли пользователя\"\"\"\r\n    def wrapped(request, **kwargs):\r\n        if request.user.role == 3:\r\n            return func(request, **kwargs)\r\n        else:\r\n            return redirect(\"/accounts/login\")\r\n    return wrapped\r\n\r\n\r\ndef decorator_check_date(func):\r\n    \"\"\"Декоратор для проверки даты\"\"\"\r\n    def wrapped(request, year, month, day):\r\n        if year in years and month in [i for i in range(1, 13)] and 1 <= day <= 31:\r\n            try:\r\n                return func(request, year, month, day)\r\n            except ValueError:\r\n                raise Http404()\r\n        else:\r\n            raise Http404()\r\n    return wrapped\r\n\r\n\r\ndef decorator_handles_task_DoesNotExist(func):\r\n    \"\"\"Декоратор обрабатывайщий исключение Task.DoesNotExist\"\"\"\r\n    def wrapped(request, **kwargs):\r\n        try:\r\n            return func(request, **kwargs)\r\n        except Task.DoesNotExist:\r\n            raise Http404()\r\n    return wrapped\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\ndef index(request):\r\n    \"\"\"Главная страница пользователя\"\"\"\r\n    today = date.today()\r\n\r\n    if request.method == \"POST\":\r\n        form = CalendarForm(request.POST)\r\n        if form.is_valid():\r\n            year, month = form.cleaned_data[\"year\"], months.index(form.cleaned_data[\"month\"]) + 1\r\n        else:\r\n            year, month = today.year, today.month\r\n    else:\r\n        year, month = today.year, today.month\r\n\r\n    weeks = get_all_weeks_month(year, month)\r\n\r\n    return render(request, \"user/index.html\", context={\r\n        \"years\": years,\r\n        \"current_year\": year,\r\n        \"current_month\": month,\r\n        \"months\": months,\r\n        \"weeks\": weeks,\r\n        \"today\": today,\r\n    })\r\n\r\n@login_required\r\n@decorator_check_user\r\n@decorator_check_date\r\ndef tasks(request, year, month, day):\r\n    \"\"\"Список заданий на определенный день\"\"\"\r\n    get_date = date(year, month, day)\r\n    return render(request, \"user/tasks.html\", context={\r\n        \"date\": get_date,\r\n        \"tasks\": Task.objects.filter(user__id=request.user.id, date=get_date),\r\n    })\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\ndef change_password_user(request):\r\n    \"\"\"Смена пароля пользователя\"\"\"\r\n    if request.method == \"POST\":\r\n        form = ChangePasswordUserForm(request.POST)\r\n        if form.is_valid():\r\n            old_password = form.cleaned_data['old_password']\r\n            if not check_password(old_password, request.user.password):\r\n                messages.error(request, \"wrong old password!\")\r\n                return render(request, \"user/change_password_user.html\", context={\"form\": form})\r\n            request.user.set_password(form.cleaned_data[\"password\"])\r\n            request.user.save()\r\n            return redirect(\"/accounts/login\")\r\n    else:\r\n        form = ChangePasswordUserForm()\r\n    return render(request, \"user/change_password_user.html\", context={\"form\": form})\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\ndef change_data_user(request):\r\n    \"\"\"Редактирование данных пользователем\"\"\"\r\n    if request.method == \"POST\":\r\n        form = ChangeDataUserForm(request.POST)\r\n        if form.is_valid():\r\n            request.user.email = form.cleaned_data[\"email\"]\r\n            request.user.last_name = form.cleaned_data[\"last_name\"]\r\n            request.user.first_name = form.cleaned_data[\"first_name\"]\r\n            request.user.save()\r\n            return redirect(index)\r\n        else:\r\n            messages.error(request, \"Invalid data\")\r\n    form = ChangeDataUserForm(instance=request.user)\r\n    return render(request, \"user/change_data_user.html\", context={\"form\": form})\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\n@decorator_check_date\r\ndef create_task(request, year, month, day):\r\n    \"\"\"Добавления задания\"\"\"\r\n    if request.method == \"POST\":\r\n        form = TaskForm(request.POST, user=request.user)\r\n        if form.is_valid():\r\n            Task.objects.create(**{\r\n                \"project\": form.cleaned_data[\"project\"],\r\n                \"time_worked\": form.cleaned_data[\"time_worked\"],\r\n                \"description\": form.cleaned_data[\"description\"],\r\n                \"date\": date(year, month, day),\r\n                \"user\": request.user,\r\n            })\r\n            return redirect(tasks, year, month, day)\r\n        else:\r\n            messages.error(request, \"Invalid data\")\r\n    return render(request, \"user/task_form.html\", context={\r\n        \"form\": TaskForm(user=request.user),\r\n        \"button_name\": \"Create\",\r\n    })\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\n@decorator_handles_task_DoesNotExist\r\ndef edit_task(request, task_id):\r\n    \"\"\"Редактирование задания\"\"\"\r\n    if request.method == \"POST\":\r\n        form = TaskForm(request.POST, user=request.user)\r\n        if form.is_valid():\r\n            Task.objects.filter(id=task_id, user=request.user).update(**{\r\n                \"project\": form.cleaned_data[\"project\"],\r\n                \"time_worked\": form.cleaned_data[\"time_worked\"],\r\n                \"description\": form.cleaned_data[\"description\"],\r\n            })\r\n            task = Task.objects.get(id=task_id, user=request.user)\r\n            return redirect(tasks, task.date.year, task.date.month, task.date.day)\r\n        else:\r\n            messages.error(request, \"Invalid data\")\r\n    return render(request, \"user/task_form.html\", context={\r\n        \"form\": TaskForm(user=request.user, instance=Task.objects.get(id=task_id, user=request.user)),\r\n        \"button_name\": \"Edit\",\r\n    })\r\n\r\n\r\n@login_required\r\n@decorator_check_user\r\n@decorator_handles_task_DoesNotExist\r\ndef delete_task(request, task_id):\r\n    \"\"\"Удаление задания\"\"\"\r\n    task = Task.objects.get(id=task_id, user=request.user)\r\n    year, month, day = task.date.year, task.date.month, task.date.day\r\n    task.delete()\r\n    return redirect(tasks, year, month, day)\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/user/views.py b/app/user/views.py
+---- a/app/user/views.py	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/user/views.py	(date 1622199655530)
+-@@ -1,6 +1,6 @@
+- from django.http import Http404
+- from django.shortcuts import render, redirect
+--from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm
+-+from user.forms import ChangeDataUserForm, CalendarForm, ChangePasswordUserForm, TaskForm, SelectionForm
+- from django.contrib import messages
+- from django.contrib.auth.hashers import check_password
+- from django.contrib.auth.decorators import login_required
+-@@ -173,3 +173,19 @@
+-     year, month, day = task.date.year, task.date.month, task.date.day
+-     task.delete()
+-     return redirect(tasks, year, month, day)
+-+
+-+
+-+@login_required
+-+@decorator_check_user
+-+def select_tasks(request):
+-+    """Выборка заданий за различные периоды времени"""
+-+    if request.method == "POST":
+-+        form = SelectionForm(request.POST)
+-+        if form.is_valid():
+-+            return render(request, "user/list_tasks.html", context={
+-+                "tasks": Task.objects.filter(user=request.user).exclude(
+-+                    date__gt=form.cleaned_data["end_date"]).exclude(date__lt=form.cleaned_data["start_date"])
+-+            })
+-+        else:
+-+            messages.error(request, "Invalid data")
+-+    return render(request, "selection_form.html", context={"form": SelectionForm()})
+-\ No newline at end of file
+-Index: app/user/forms.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>from django.forms import ModelForm, Form, IntegerField, CharField\r\nfrom django import forms\r\nfrom user.models import Task, User\r\nfrom user.calendar import years, months\r\n\r\n\r\nclass ChangeDataUserForm(ModelForm):\r\n    class Meta:\r\n        model = User\r\n        fields = ['first_name', 'last_name', 'email']\r\n\r\n\r\nclass ChangePasswordUserForm(Form):\r\n    old_password = forms.CharField(label=\"old password\", widget=forms.PasswordInput)\r\n    password = forms.CharField(label=\"new password\", widget=forms.PasswordInput)\r\n    password2 = forms.CharField(label=\"repeat password\", widget=forms.PasswordInput)\r\n\r\n    def clean_password2(self):\r\n        cd = self.cleaned_data\r\n        if cd['password'] != cd['password2']:\r\n            raise forms.ValidationError(\"passwords don't match\")\r\n        return cd['password2']\r\n\r\n\r\nclass CalendarForm(Form):\r\n    year = IntegerField(required=False)\r\n    month = CharField(required=False)\r\n\r\n    def is_valid(self):\r\n        valid = super(CalendarForm, self).is_valid()\r\n\r\n        if not valid:\r\n            return valid\r\n\r\n        if self.cleaned_data['year'] not in years or self.cleaned_data['month'] not in months:\r\n            return False\r\n\r\n        return True\r\n\r\n\r\nclass TaskForm(ModelForm):\r\n    class Meta:\r\n        model = Task\r\n        fields = ['time_worked', 'description', 'project']\r\n\r\n    def __init__(self, *args, **kwargs):\r\n        user = kwargs.pop('user', None)\r\n        super(TaskForm, self).__init__(*args, **kwargs)\r\n\r\n        if user:\r\n            self.fields['project'].queryset = user.department.project.all()\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/user/forms.py b/app/user/forms.py
+---- a/app/user/forms.py	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/user/forms.py	(date 1622199770440)
+-@@ -1,7 +1,8 @@
+--from django.forms import ModelForm, Form, IntegerField, CharField
+-+from django.forms import ModelForm, Form, IntegerField, CharField, DateField
+- from django import forms
+- from user.models import Task, User
+- from user.calendar import years, months
+-+from datetime import date
+- 
+- 
+- class ChangeDataUserForm(ModelForm):
+-@@ -49,3 +50,20 @@
+- 
+-         if user:
+-             self.fields['project'].queryset = user.department.project.all()
+-+
+-+class SelectionForm(Form):
+-+    start_date = DateField(label='From', input_formats=['%d/%m/%Y'])
+-+    end_date = DateField(label='To', input_formats=['%d/%m/%Y'])
+-+
+-+    def is_valid(self):
+-+        valid = super(SelectionForm, self).is_valid()
+-+
+-+        if not valid:
+-+            return valid
+-+
+-+        get_start_date, get_end_date = self.cleaned_data['start_date'], self.cleaned_data['end_date']
+-+
+-+        if get_start_date >= get_end_date or get_start_date.year < years[-1] or get_end_date > date.today():
+-+            return False
+-+
+-+        return True
+-Index: app/templates/user/index.html
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>{% extends \"base.html\" %}\r\n{% load static %}\r\n{% block title %}User{% endblock title %}\r\n{% block head %}\r\n    <link rel=\"stylesheet\" href=\"{% static 'css/user/main/base.css' %}\" type=\"text/css\"/>\r\n{% endblock head %}\r\n{% block content %}\r\n    <div class=\"page\">\r\n        <div class=\"user_page\">\r\n            <div class=\"header\">\r\n                <img src=\"{% static 'images/avatar.png' %}\" alt=\"Avatar\" class=\"avatar\">\r\n                <p>First name: {{ user.first_name }}</p>\r\n                <p>Last name: {{ user.last_name }}</p>\r\n                <p>Email: {{ user.email }}</p>\r\n                <p>Company: {{ user.department.company.name }}</p>\r\n                <p>Department: {{ user.department.name }}</p>\r\n                <p>Post: {{ user.post }}</p>\r\n            </div>\r\n            <div class=\"exer\">\r\n                <p class=\"exer1\"><a href=\"{% url 'change-data' %}\">Edit your own data</a></p>\r\n                <p class=\"exer1\"><a href=\"{% url 'change-password' %}\">Сhange password</a></p>\r\n                <p class=\"exer1\"><a href=\"{% url 'logout' %}\">Log out</a></p>\r\n            </div>\r\n        </div>\r\n        <div class=\"calendar\">\r\n            <div class=\"calendar1\">\r\n                <h2>Calendar</h2>\r\n                    <form method=\"POST\">\r\n                        {% csrf_token %}\r\n                        <select name=\"month\">\r\n                          {% for month in months %}\r\n                                <option value=\"{{ month }}\" {% if forloop.counter == current_month %}selected{% endif %}>{{ month }}</option>\r\n                          {% endfor %}\r\n                        </select>\r\n                        <select name=\"year\">\r\n                            {% for year in years %}\r\n                                <option value=\"{{ year }}\" {% if year == current_year %}selected{% endif %}>{{ year }}</option>\r\n                            {% endfor %}\r\n                        </select>\r\n                        <button>apply</button>\r\n                    </form>\r\n                <p></p>\r\n                <table align=\"center\">\r\n                  <tbody>\r\n                    <tr>\r\n                      <th>Monday</th>\r\n                      <th>Tuesday</th>\r\n                      <th>Wednesday</th>\r\n                      <th>Thursday</th>\r\n                      <th>Friday</th>\r\n                      <th>Saturday</th>\r\n                      <th>Sunday</th>\r\n                    </tr>\r\n                    {% for week in weeks %}\r\n                        <tr>\r\n                            {% for day in week %}\r\n                                <td>\r\n                                    {% if day is not None %}\r\n                                        <a href=\"{% url 'list-tasks' current_year current_month day.num %}\">\r\n                                            <font color=\"{% if today.year == current_year and today.month == current_month and today.day == day.num %}gold{% elif not day.is_working_day %}red{% else %}white{% endif %}\">{{ day.num }}</font>\r\n                                        </a>\r\n                                    {% endif %}\r\n                                </td>\r\n                            {% endfor %}\r\n                        </tr>\r\n                    {% endfor %}\r\n                  </tbody>\r\n                </table>\r\n            </div>\r\n        </div>\r\n    </div>\r\n{% endblock content %}
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/templates/user/index.html b/app/templates/user/index.html
+---- a/app/templates/user/index.html	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/templates/user/index.html	(date 1622197390406)
+-@@ -66,6 +66,10 @@
+-                     {% endfor %}
+-                   </tbody>
+-                 </table>
+-+                <p></p>
+-+                <form action="{% url 'select-tasks' %}">
+-+                    <button>Selection</button>
+-+                </form>
+-             </div>
+-         </div>
+-     </div>
+-Index: .idea/workspace.xml
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"Implemented HEAD_TRACK-004\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/templates/user/create_task.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/templates/user/task_form.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/templates/user/index.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/templates/user/index.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/templates/user/tasks.html\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/templates/user/tasks.html\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/user/forms.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/user/forms.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/user/urls.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/user/urls.py\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/app/user/views.py\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/app/user/views.py\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"HTML File\" />\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1sw8sYEna1Etgwm6wvv9lEuSSdi\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"DefaultHtmlFileTemplate\" value=\"HTML File\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1621772498950</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1621772498950</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Added tasks\">\r\n      <created>1621773329643</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621773329643</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Changed the Task model. Added the CreateTask form. File created create-task.html\">\r\n      <created>1621845004071</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621845004071</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Changed settings\">\r\n      <created>1621847638432</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621847638432</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"Added the director app\">\r\n      <created>1621849350725</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621849350725</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"Added the index view to the director app\">\r\n      <created>1621850960800</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621850960800</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"Rename authorization to account\">\r\n      <created>1621856893580</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621856893580</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003\">\r\n      <created>1621939867920</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621939867920</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Implemented HEAD_TRACK-004\">\r\n      <created>1622185602273</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622185602273</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"9\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Added tasks\" />\r\n    <MESSAGE value=\"Changed the Task model. Added the CreateTask form. File created create-task.html\" />\r\n    <MESSAGE value=\"Changed settings\" />\r\n    <MESSAGE value=\"Added the director app\" />\r\n    <MESSAGE value=\"Added the index view to the director app\" />\r\n    <MESSAGE value=\"Rename authorization to account\" />\r\n    <MESSAGE value=\"Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003\" />\r\n    <MESSAGE value=\"Implemented HEAD_TRACK-004\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Implemented HEAD_TRACK-004\" />\r\n  </component>\r\n</project>
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+---- a/.idea/workspace.xml	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/.idea/workspace.xml	(date 1622274554269)
+-@@ -1,11 +1,11 @@
+- <?xml version="1.0" encoding="UTF-8"?>
+- <project version="4">
+-   <component name="ChangeListManager">
+--    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Implemented HEAD_TRACK-004">
+-+    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added create_task, edit_task, delete_task">
+-       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/app/templates/user/create_task.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/task_form.html" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/app/director/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/director/views.py" afterDir="false" />
+-+      <change beforePath="$PROJECT_DIR$/app/templates/director/selection_form.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/selection_form.html" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/app/templates/user/index.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/index.html" afterDir="false" />
+--      <change beforePath="$PROJECT_DIR$/app/templates/user/tasks.html" beforeDir="false" afterPath="$PROJECT_DIR$/app/templates/user/tasks.html" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/app/user/forms.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/forms.py" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/app/user/urls.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/urls.py" afterDir="false" />
+-       <change beforePath="$PROJECT_DIR$/app/user/views.py" beforeDir="false" afterPath="$PROJECT_DIR$/app/user/views.py" afterDir="false" />
+-@@ -18,13 +18,21 @@
+-   <component name="FileTemplateManagerImpl">
+-     <option name="RECENT_TEMPLATES">
+-       <list>
+--        <option value="HTML File" />
+-         <option value="Python Script" />
+-+        <option value="HTML File" />
+-       </list>
+-     </option>
+-   </component>
+-   <component name="Git.Settings">
+-     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+-+  </component>
+-+  <component name="GitSEFilterConfiguration">
+-+    <file-type-list>
+-+      <filtered-out-file-type name="LOCAL_BRANCH" />
+-+      <filtered-out-file-type name="REMOTE_BRANCH" />
+-+      <filtered-out-file-type name="TAG" />
+-+      <filtered-out-file-type name="COMMIT_BY_MESSAGE" />
+-+    </file-type-list>
+-   </component>
+-   <component name="ProjectId" id="1sw8sYEna1Etgwm6wvv9lEuSSdi" />
+-   <component name="ProjectViewState">
+-@@ -35,7 +43,15 @@
+-     <property name="DefaultHtmlFileTemplate" value="HTML File" />
+-     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
+-     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
+--    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
+-+    <property name="last_opened_file_path" value="$PROJECT_DIR$/app/templates/user" />
+-+  </component>
+-+  <component name="RecentsManager">
+-+    <key name="CopyFile.RECENT_KEYS">
+-+      <recent name="D:\Работа\Проект\app\templates\user" />
+-+    </key>
+-+    <key name="MoveFile.RECENT_KEYS">
+-+      <recent name="D:\Работа\Проект\app\templates" />
+-+    </key>
+-   </component>
+-   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+-   <component name="TaskManager">
+-@@ -102,7 +118,14 @@
+-       <option name="project" value="LOCAL" />
+-       <updated>1622185602273</updated>
+-     </task>
+--    <option name="localTasksCounter" value="9" />
+-+    <task id="LOCAL-00009" summary="Added create_task, edit_task, delete_task">
+-+      <created>1622196674520</created>
+-+      <option name="number" value="00009" />
+-+      <option name="presentableId" value="LOCAL-00009" />
+-+      <option name="project" value="LOCAL" />
+-+      <updated>1622196674520</updated>
+-+    </task>
+-+    <option name="localTasksCounter" value="10" />
+-     <servers />
+-   </component>
+-   <component name="Vcs.Log.Tabs.Properties">
+-@@ -126,6 +149,7 @@
+-     <MESSAGE value="Rename authorization to account" />
+-     <MESSAGE value="Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003" />
+-     <MESSAGE value="Implemented HEAD_TRACK-004" />
+--    <option name="LAST_COMMIT_MESSAGE" value="Implemented HEAD_TRACK-004" />
+-+    <MESSAGE value="Added create_task, edit_task, delete_task" />
+-+    <option name="LAST_COMMIT_MESSAGE" value="Added create_task, edit_task, delete_task" />
+-   </component>
+- </project>
+-\ No newline at end of file
+-Index: app/director/views.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>from django.contrib.auth.decorators import login_required\r\nfrom django.shortcuts import render, redirect\r\nfrom user.models import User, Task\r\nfrom director.forms import SelectionForm\r\nfrom django.contrib import messages\r\nfrom django.http import HttpResponse, Http404\r\n\r\nimport csv\r\nimport pandas\r\n\r\n\r\ndef decorator_check_director(func):\r\n    \"\"\"\"Декоратор для проверки роли руководителя\"\"\"\r\n    def wrapped(request, **kwargs):\r\n        if request.user.role == 2:\r\n            return func(request, **kwargs)\r\n        else:\r\n            return redirect(\"/accounts/login\")\r\n    return wrapped\r\n\r\n\r\n@login_required\r\n@decorator_check_director\r\ndef index(request):\r\n    \"\"\"Главная страница руководителя\"\"\"\r\n    return render(request, \"director/index.html\", context={\r\n        \"users\": User.objects.filter(department=request.user.department, role=3)\r\n    })\r\n\r\n\r\n@login_required\r\n@decorator_check_director\r\ndef user_data(request, user_id):\r\n    \"\"\"Просмотр данных каждого из пользователей отдела\"\"\"\r\n    try:\r\n        get_user = User.objects.get(id=user_id)\r\n    except User.DoesNotExist:\r\n        raise Http404()\r\n    if get_user in User.objects.filter(department=request.user.department, role=3):\r\n        tasks = Task.objects.filter(user=get_user)\r\n        return render(request, \"director/user_data.html\", context={\"get_user\": get_user, \"tasks\": tasks})\r\n    else:\r\n        raise Http404()\r\n\r\n\r\n@login_required\r\n@decorator_check_director\r\ndef users_data_selection(request):\r\n    \"\"\"Выборка данных пользователей\"\"\"\r\n    if request.method == \"POST\":\r\n        form = SelectionForm(request.POST, department=request.user.department)\r\n        if form.is_valid():\r\n            start_date, end_date, users, file_format = form.cleaned_data[\"start_date\"], form.cleaned_data[\"end_date\"],\\\r\n                                          form.cleaned_data[\"users\"], int(form.cleaned_data[\"uploading_data\"])\r\n            array = {user: Task.objects.filter(user=user).exclude(date__gt=end_date).exclude(date__lt=start_date)\r\n                     for user in users}\r\n\r\n            column_names = [\"First name\", \"Last name\", \"Date\", \"Worked time\", \"Name project\", \"Description\"]\r\n\r\n            if file_format == 1:\r\n                return render(request, \"director/users_data_selection.html\", context={\"array\": array})\r\n            elif file_format == 2:\r\n                response = HttpResponse(content_type='text/csv')\r\n                response['Content-Disposition'] = 'attachment; filename=\"data.csv\"'\r\n\r\n                writer = csv.writer(response, delimiter = \";\", lineterminator=\"\\r\")\r\n                writer.writerow(column_names)\r\n                for user, tasks in array.items():\r\n                    for task in tasks:\r\n                        writer.writerow([user.first_name, user.last_name, str(task.date), task.time_worked,\r\n                                        task.project.name, task.description])\r\n                return response\r\n            else:\r\n                response = HttpResponse(content_type='application/vnd.ms-excel')\r\n                response['Content-Disposition'] = 'attachment; filename=\"data.xlsx\"'\r\n\r\n                data_frame = {column_name: list() for column_name in column_names}\r\n                for user, tasks in array.items():\r\n                    for task in tasks:\r\n                        data_frame[\"First name\"].append(user.first_name)\r\n                        data_frame[\"Last name\"].append(user.last_name)\r\n                        data_frame[\"Date\"].append(str(task.date))\r\n                        data_frame[\"Worked time\"].append(task.time_worked)\r\n                        data_frame[\"Name project\"].append(task.project.name)\r\n                        data_frame[\"Description\"].append(task.description)\r\n                pandas.DataFrame(data_frame).to_excel(response)\r\n                return response\r\n        else:\r\n            messages.error(request, \"Invalid data\")\r\n    return render(request, \"director/selection_form.html\", context={\r\n        \"form\": SelectionForm(department=request.user.department)\r\n    })\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/director/views.py b/app/director/views.py
+---- a/app/director/views.py	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/director/views.py	(date 1622197877074)
+-@@ -87,6 +87,6 @@
+-                 return response
+-         else:
+-             messages.error(request, "Invalid data")
+--    return render(request, "director/selection_form.html", context={
+-+    return render(request, "selection_form.html", context={
+-         "form": SelectionForm(department=request.user.department)
+-     })
+-Index: app/user/urls.py
+-IDEA additional info:
+-Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+-<+>from django.urls import path\r\nfrom user import views\r\n\r\nurlpatterns = [\r\n    path('list-tasks/<int:year>/<int:month>/<int:day>/', views.tasks, name='list-tasks'),\r\n    path('create-task/<int:year>/<int:month>/<int:day>/', views.create_task, name='create-task'),\r\n    path('edit-task/<int:task_id>/', views.edit_task, name='edit-task'),\r\n    path('delete-task/<int:task_id>/', views.delete_task, name='delete-task'),\r\n    path('change-data/', views.change_data_user, name='change-data'),\r\n    path('change-password/', views.change_password_user, name='change-password'),\r\n    path('', views.index),\r\n]\r\n
+-Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+-<+>UTF-8
+-===================================================================
+-diff --git a/app/user/urls.py b/app/user/urls.py
+---- a/app/user/urls.py	(revision 16975391f6421052f2b1ef43dc8c6b9fe14bb02c)
+-+++ b/app/user/urls.py	(date 1622197226071)
+-@@ -6,6 +6,7 @@
+-     path('create-task/<int:year>/<int:month>/<int:day>/', views.create_task, name='create-task'),
+-     path('edit-task/<int:task_id>/', views.edit_task, name='edit-task'),
+-     path('delete-task/<int:task_id>/', views.delete_task, name='delete-task'),
+-+    path('select-tasks/', views.select_tasks, name='select-tasks'),
+-     path('change-data/', views.change_data_user, name='change-data'),
+-     path('change-password/', views.change_password_user, name='change-password'),
+-     path('', views.index),
+Index: .idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49__Default_Changelist_.xml
+===================================================================
+diff --git a/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49__Default_Changelist_.xml b/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49__Default_Changelist_.xml
+deleted file mode 100644
+--- a/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49__Default_Changelist_.xml	(revision 84fbbd66b2302e075b0f2047590c4b9bd6ffb1e8)
++++ /dev/null	(revision 84fbbd66b2302e075b0f2047590c4b9bd6ffb1e8)
+@@ -1,4 +0,0 @@
+-<changelist name="Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]" date="1622274557354" recycled="true" deleted="true">
+-  <option name="PATH" value="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch" />
+-  <option name="DESCRIPTION" value="Uncommitted changes before Update at 29.05.2021 10:49 [Default Changelist]" />
+-</changelist>
+\ No newline at end of file
+Index: .idea/workspace.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ChangeListManager\">\r\n    <list default=\"true\" id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"Added the ability to edit your password and your data in the director app\">\r\n      <change beforePath=\"$PROJECT_DIR$/.idea/workspace.xml\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/.idea/workspace.xml\" afterDir=\"false\" />\r\n      <change beforePath=\"$PROJECT_DIR$/documentation/Даталогическая модель базы данных.drawio\" beforeDir=\"false\" afterPath=\"$PROJECT_DIR$/documentation/Даталогическая модель базы данных.drawio\" afterDir=\"false\" />\r\n    </list>\r\n    <option name=\"SHOW_DIALOG\" value=\"false\" />\r\n    <option name=\"HIGHLIGHT_CONFLICTS\" value=\"true\" />\r\n    <option name=\"HIGHLIGHT_NON_ACTIVE_CHANGELIST\" value=\"false\" />\r\n    <option name=\"LAST_RESOLUTION\" value=\"IGNORE\" />\r\n  </component>\r\n  <component name=\"FileTemplateManagerImpl\">\r\n    <option name=\"RECENT_TEMPLATES\">\r\n      <list>\r\n        <option value=\"HTML File\" />\r\n        <option value=\"Python Script\" />\r\n      </list>\r\n    </option>\r\n  </component>\r\n  <component name=\"Git.Settings\">\r\n    <option name=\"RECENT_GIT_ROOT_PATH\" value=\"$PROJECT_DIR$\" />\r\n  </component>\r\n  <component name=\"GitSEFilterConfiguration\">\r\n    <file-type-list>\r\n      <filtered-out-file-type name=\"LOCAL_BRANCH\" />\r\n      <filtered-out-file-type name=\"REMOTE_BRANCH\" />\r\n      <filtered-out-file-type name=\"TAG\" />\r\n      <filtered-out-file-type name=\"COMMIT_BY_MESSAGE\" />\r\n    </file-type-list>\r\n  </component>\r\n  <component name=\"ProjectId\" id=\"1sw8sYEna1Etgwm6wvv9lEuSSdi\" />\r\n  <component name=\"ProjectViewState\">\r\n    <option name=\"hideEmptyMiddlePackages\" value=\"true\" />\r\n    <option name=\"showLibraryContents\" value=\"true\" />\r\n  </component>\r\n  <component name=\"PropertiesComponent\">\r\n    <property name=\"DefaultHtmlFileTemplate\" value=\"HTML File\" />\r\n    <property name=\"RunOnceActivity.OpenProjectViewOnStart\" value=\"true\" />\r\n    <property name=\"RunOnceActivity.ShowReadmeOnStart\" value=\"true\" />\r\n    <property name=\"last_opened_file_path\" value=\"$PROJECT_DIR$/../3 курс/Программирование численных методов/лаб 13 Метод простых итераций\" />\r\n  </component>\r\n  <component name=\"RecentsManager\">\r\n    <key name=\"CopyFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\Работа\\Проект\\app\\templates\\user\" />\r\n    </key>\r\n    <key name=\"MoveFile.RECENT_KEYS\">\r\n      <recent name=\"D:\\Работа\\Проект\\app\\templates\" />\r\n      <recent name=\"D:\\Работа\\Проект\\app\\templates\\user\\tasks\" />\r\n      <recent name=\"D:\\Работа\\Проект\\app\\templates\\user\\main\" />\r\n    </key>\r\n  </component>\r\n  <component name=\"RunManager\">\r\n    <configuration name=\"test_views\" type=\"PythonConfigurationType\" factoryName=\"Python\" temporary=\"true\" nameIsGenerated=\"true\">\r\n      <module name=\"Проект\" />\r\n      <option name=\"INTERPRETER_OPTIONS\" value=\"\" />\r\n      <option name=\"PARENT_ENVS\" value=\"true\" />\r\n      <envs>\r\n        <env name=\"PYTHONUNBUFFERED\" value=\"1\" />\r\n      </envs>\r\n      <option name=\"SDK_HOME\" value=\"\" />\r\n      <option name=\"WORKING_DIRECTORY\" value=\"$PROJECT_DIR$/app/director/tests\" />\r\n      <option name=\"IS_MODULE_SDK\" value=\"false\" />\r\n      <option name=\"ADD_CONTENT_ROOTS\" value=\"true\" />\r\n      <option name=\"ADD_SOURCE_ROOTS\" value=\"true\" />\r\n      <option name=\"SCRIPT_NAME\" value=\"$PROJECT_DIR$/app/director/tests/test_views.py\" />\r\n      <option name=\"PARAMETERS\" value=\"\" />\r\n      <option name=\"SHOW_COMMAND_LINE\" value=\"false\" />\r\n      <option name=\"EMULATE_TERMINAL\" value=\"false\" />\r\n      <option name=\"MODULE_MODE\" value=\"false\" />\r\n      <option name=\"REDIRECT_INPUT\" value=\"false\" />\r\n      <option name=\"INPUT_FILE\" value=\"\" />\r\n      <method v=\"2\" />\r\n    </configuration>\r\n    <recent_temporary>\r\n      <list>\r\n        <item itemvalue=\"Python.test_views\" />\r\n      </list>\r\n    </recent_temporary>\r\n  </component>\r\n  <component name=\"SpellCheckerSettings\" RuntimeDictionaries=\"0\" Folders=\"0\" CustomDictionaries=\"0\" DefaultDictionary=\"application-level\" UseSingleDictionary=\"true\" transferred=\"true\" />\r\n  <component name=\"TaskManager\">\r\n    <task active=\"true\" id=\"Default\" summary=\"Default task\">\r\n      <changelist id=\"6906d687-5245-4363-bb1a-37163bc15c9d\" name=\"Default Changelist\" comment=\"\" />\r\n      <created>1621772498950</created>\r\n      <option name=\"number\" value=\"Default\" />\r\n      <option name=\"presentableId\" value=\"Default\" />\r\n      <updated>1621772498950</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00001\" summary=\"Added tasks\">\r\n      <created>1621773329643</created>\r\n      <option name=\"number\" value=\"00001\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00001\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621773329643</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00002\" summary=\"Changed the Task model. Added the CreateTask form. File created create-task.html\">\r\n      <created>1621845004071</created>\r\n      <option name=\"number\" value=\"00002\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00002\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621845004071</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00003\" summary=\"Changed settings\">\r\n      <created>1621847638432</created>\r\n      <option name=\"number\" value=\"00003\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00003\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621847638432</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00004\" summary=\"Added the director app\">\r\n      <created>1621849350725</created>\r\n      <option name=\"number\" value=\"00004\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00004\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621849350725</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00005\" summary=\"Added the index view to the director app\">\r\n      <created>1621850960800</created>\r\n      <option name=\"number\" value=\"00005\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00005\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621850960800</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00006\" summary=\"Rename authorization to account\">\r\n      <created>1621856893580</created>\r\n      <option name=\"number\" value=\"00006\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00006\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621856893580</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00007\" summary=\"Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003\">\r\n      <created>1621939867920</created>\r\n      <option name=\"number\" value=\"00007\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00007\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1621939867920</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00008\" summary=\"Implemented HEAD_TRACK-004\">\r\n      <created>1622185602273</created>\r\n      <option name=\"number\" value=\"00008\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00008\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622185602273</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00009\" summary=\"Added create_task, edit_task, delete_task\">\r\n      <created>1622196674520</created>\r\n      <option name=\"number\" value=\"00009\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00009\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622196674520</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00010\" summary=\"Implemented USER_TRACK-007\">\r\n      <created>1622274841169</created>\r\n      <option name=\"number\" value=\"00010\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00010\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622274841169</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00011\" summary=\"Optimization user app\">\r\n      <created>1622393297736</created>\r\n      <option name=\"number\" value=\"00011\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00011\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622393297736</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00012\" summary=\"Optimization director app\">\r\n      <created>1622397786960</created>\r\n      <option name=\"number\" value=\"00012\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00012\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622397786960</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00013\" summary=\"Optimization account app\">\r\n      <created>1622399339127</created>\r\n      <option name=\"number\" value=\"00013\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00013\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622399339127</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00014\" summary=\"Added logging\">\r\n      <created>1622458504398</created>\r\n      <option name=\"number\" value=\"00014\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00014\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622458504398</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00015\" summary=\"Added tests director app\">\r\n      <created>1622553994923</created>\r\n      <option name=\"number\" value=\"00015\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00015\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622553994923</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00016\" summary=\"Added tests director app\">\r\n      <created>1622554005884</created>\r\n      <option name=\"number\" value=\"00016\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00016\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622554005885</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00017\" summary=\"Fixed tests director app\">\r\n      <created>1622614792008</created>\r\n      <option name=\"number\" value=\"00017\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00017\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622614792008</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00018\" summary=\"Added tests user app\">\r\n      <created>1622621684738</created>\r\n      <option name=\"number\" value=\"00018\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00018\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622621684738</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00019\" summary=\"Minor changes\">\r\n      <created>1622628799096</created>\r\n      <option name=\"number\" value=\"00019\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00019\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622628799096</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00020\" summary=\"Added tests account app\">\r\n      <created>1622650973543</created>\r\n      <option name=\"number\" value=\"00020\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00020\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622650973543</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00021\" summary=\"Added tests account app\">\r\n      <created>1622650985942</created>\r\n      <option name=\"number\" value=\"00021\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00021\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622650985942</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00022\" summary=\"Added tests main app\">\r\n      <created>1622653554986</created>\r\n      <option name=\"number\" value=\"00022\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00022\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622653554986</updated>\r\n    </task>\r\n    <task id=\"LOCAL-00023\" summary=\"Added the ability to edit your password and your data in the director app\">\r\n      <created>1622659110869</created>\r\n      <option name=\"number\" value=\"00023\" />\r\n      <option name=\"presentableId\" value=\"LOCAL-00023\" />\r\n      <option name=\"project\" value=\"LOCAL\" />\r\n      <updated>1622659110869</updated>\r\n    </task>\r\n    <option name=\"localTasksCounter\" value=\"24\" />\r\n    <servers />\r\n  </component>\r\n  <component name=\"Vcs.Log.Tabs.Properties\">\r\n    <option name=\"TAB_STATES\">\r\n      <map>\r\n        <entry key=\"MAIN\">\r\n          <value>\r\n            <State />\r\n          </value>\r\n        </entry>\r\n      </map>\r\n    </option>\r\n    <option name=\"oldMeFiltersMigrated\" value=\"true\" />\r\n  </component>\r\n  <component name=\"VcsManagerConfiguration\">\r\n    <MESSAGE value=\"Added tasks\" />\r\n    <MESSAGE value=\"Changed the Task model. Added the CreateTask form. File created create-task.html\" />\r\n    <MESSAGE value=\"Changed settings\" />\r\n    <MESSAGE value=\"Added the director app\" />\r\n    <MESSAGE value=\"Added the index view to the director app\" />\r\n    <MESSAGE value=\"Rename authorization to account\" />\r\n    <MESSAGE value=\"Implemented HEAD_TRACK-001, HEAD_TRACK-002, HEAD_TRACK-003\" />\r\n    <MESSAGE value=\"Implemented HEAD_TRACK-004\" />\r\n    <MESSAGE value=\"Added create_task, edit_task, delete_task\" />\r\n    <MESSAGE value=\"Implemented USER_TRACK-007\" />\r\n    <MESSAGE value=\"Optimization user app\" />\r\n    <MESSAGE value=\"Optimization director app\" />\r\n    <MESSAGE value=\"Optimization account app\" />\r\n    <MESSAGE value=\"Added logging\" />\r\n    <MESSAGE value=\"Added tests director app\" />\r\n    <MESSAGE value=\"Fixed tests director app\" />\r\n    <MESSAGE value=\"Added tests user app\" />\r\n    <MESSAGE value=\"Minor changes\" />\r\n    <MESSAGE value=\"Added tests account app\" />\r\n    <MESSAGE value=\"Added tests main app\" />\r\n    <MESSAGE value=\"Added the ability to edit your password and your data in the director app\" />\r\n    <option name=\"LAST_COMMIT_MESSAGE\" value=\"Added the ability to edit your password and your data in the director app\" />\r\n  </component>\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/workspace.xml b/.idea/workspace.xml
+--- a/.idea/workspace.xml	(revision 84fbbd66b2302e075b0f2047590c4b9bd6ffb1e8)
++++ b/.idea/workspace.xml	(date 1623047025698)
+@@ -1,9 +1,10 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+   <component name="ChangeListManager">
+-    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Added the ability to edit your password and your data in the director app">
++    <list default="true" id="6906d687-5245-4363-bb1a-37163bc15c9d" name="Default Changelist" comment="Fixed the documentation">
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49_[Default_Changelist]/shelved.patch" beforeDir="false" />
++      <change beforePath="$PROJECT_DIR$/.idea/shelf/Uncommitted_changes_before_Update_at_29_05_2021_10_49__Default_Changelist_.xml" beforeDir="false" />
+       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+-      <change beforePath="$PROJECT_DIR$/documentation/Даталогическая модель базы данных.drawio" beforeDir="false" afterPath="$PROJECT_DIR$/documentation/Даталогическая модель базы данных.drawio" afterDir="false" />
+     </list>
+     <option name="SHOW_DIALOG" value="false" />
+     <option name="HIGHLIGHT_CONFLICTS" value="true" />
+@@ -248,7 +249,14 @@
+       <option name="project" value="LOCAL" />
+       <updated>1622659110869</updated>
+     </task>
+-    <option name="localTasksCounter" value="24" />
++    <task id="LOCAL-00024" summary="Fixed the documentation">
++      <created>1622667072902</created>
++      <option name="number" value="00024" />
++      <option name="presentableId" value="LOCAL-00024" />
++      <option name="project" value="LOCAL" />
++      <updated>1622667072902</updated>
++    </task>
++    <option name="localTasksCounter" value="25" />
+     <servers />
+   </component>
+   <component name="Vcs.Log.Tabs.Properties">
+@@ -285,6 +293,7 @@
+     <MESSAGE value="Added tests account app" />
+     <MESSAGE value="Added tests main app" />
+     <MESSAGE value="Added the ability to edit your password and your data in the director app" />
+-    <option name="LAST_COMMIT_MESSAGE" value="Added the ability to edit your password and your data in the director app" />
++    <MESSAGE value="Fixed the documentation" />
++    <option name="LAST_COMMIT_MESSAGE" value="Fixed the documentation" />
+   </component>
+ </project>
+\ No newline at end of file
